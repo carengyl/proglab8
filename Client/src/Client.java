@@ -1,5 +1,8 @@
+import CommandLine.CommandReader;
+
 public class Client {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        CommandReader commandReader = new CommandReader();
+        commandReader.readCommandsFromConsole();
     }
 }
