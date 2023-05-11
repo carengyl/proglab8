@@ -4,6 +4,8 @@ import clientUtil.ClientSocketHandler;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
 
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -15,7 +17,7 @@ public class ClientHandler {
     private static final int MIN_PORT = 1;
     private final int MAX_PORT = 2^16;
 
-    private ClientSocketHandler clientSocketHandler = new ClientSocketHandler();;
+    private ClientSocketHandler clientSocketHandler;
     private boolean working = true;
 
     public void start() {
@@ -30,6 +32,7 @@ public class ClientHandler {
     private void inputAddress() {
         try {
             boolean useDefaultServer = Validators.validateBooleanInput("Do you want to use a default server address", scanner);
+            clientSocketHandler = new ClientSocketHandler();
             if (!useDefaultServer) {
                 OutputUtil.printSuccessfulMessage("Please enter the server's internet address");
                 String address = scanner.nextLine();
@@ -38,6 +41,11 @@ public class ClientHandler {
         } catch (NoUserInputException |NoSuchElementException e) {
             OutputUtil.printErrorMessage(e.getMessage());
             toggleStatus();
+        } catch (SocketException e) {
+            OutputUtil.printErrorMessage("Problem with opening server port, try again");
+        } catch (UnknownHostException e) {
+            OutputUtil.printErrorMessage("Unknown address, try again.");
+            inputAddress();
         }
     }
 
