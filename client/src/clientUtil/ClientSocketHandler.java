@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 
 public class ClientSocketHandler {
     private final int DEFAULT_PORT = 1337;
-    private final int RESPONSE_TIME = 4000;
+    private final int RESPONSE_TIME = 2000;
     private final DatagramSocket datagramSocket;
     private int port;
     private String address = "localhost";
@@ -33,6 +33,7 @@ public class ClientSocketHandler {
 
     public void sendRequest(Request request) throws IOException {
         ByteBuffer byteBuffer = Serializer.serializeRequest(request);
+        assert byteBuffer != null;
         byte[] sendingBuffer = byteBuffer.array();
         DatagramPacket datagramPacket = new DatagramPacket(sendingBuffer, sendingBuffer.length, serverAddress, port);
         datagramSocket.send(datagramPacket);

@@ -1,23 +1,23 @@
-import commandLine.CommandReader;
-import exceptions.NoUserInputException;
+import UDPutil.Request;
 import clientUtil.ClientSocketHandler;
+import commandLine.CommandReader;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
+import exceptions.NoUserInputException;
 
+import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ClientHandler {
     private final Scanner scanner = new Scanner(System.in);
     private final CommandReader commandReader = new CommandReader();
-
+    private ClientSocketHandler clientSocketHandler;
     private static final int MIN_PORT = 1;
     private final int MAX_PORT = 2^16;
 
-    private ClientSocketHandler clientSocketHandler;
     private boolean working = true;
 
     public void start() {
@@ -38,11 +38,12 @@ public class ClientHandler {
                 String address = scanner.nextLine();
                 clientSocketHandler.setAddress(address);
             }
-        } catch (NoUserInputException |NoSuchElementException e) {
+        } catch (NoUserInputException | NoSuchElementException e) {
             OutputUtil.printErrorMessage(e.getMessage());
             toggleStatus();
         } catch (SocketException e) {
             OutputUtil.printErrorMessage("Problem with opening server port, try again");
+            inputAddress();
         } catch (UnknownHostException e) {
             OutputUtil.printErrorMessage("Unknown address, try again.");
             inputAddress();
@@ -67,4 +68,11 @@ public class ClientHandler {
             toggleStatus();
         }
     }
+
+    private void getCommandsFromServer() throws IOException {
+        clientSocketHandler.sendRequest(new Request());
+        clientSocketHandler.receiveResponse();
+    }
+
+
 }
