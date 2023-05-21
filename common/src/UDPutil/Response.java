@@ -9,10 +9,18 @@ import java.util.HashMap;
 public class Response implements Serializable {
     private String responseMessage;
     private HumanBeing responseHumanBeing;
-    private final HashMap<String, AbstractCommand> availableCommands;
+    private HashMap<String, AbstractCommand> availableCommands;
 
     public Response(HashMap<String, AbstractCommand> availableCommands) {
         this.availableCommands = availableCommands;
+    }
+
+    public Response(HumanBeing humanBeing) {
+        this.responseHumanBeing = humanBeing;
+    }
+
+    public HumanBeing getResponseHumanBeing() {
+        return responseHumanBeing;
     }
 
     public HashMap<String, AbstractCommand> getAvailableCommands() {

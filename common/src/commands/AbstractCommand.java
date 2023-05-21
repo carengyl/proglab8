@@ -1,5 +1,6 @@
 package commands;
 
+import exceptions.InvalidNumberOfArgsException;
 import exceptions.ValidationException;
 
 public abstract class AbstractCommand {
@@ -23,6 +24,9 @@ public abstract class AbstractCommand {
     }
 
     public abstract void executeCommand(CommandArgument argument);
+    public abstract CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException;
 
-    public abstract CommandArgument validateArguments(CommandArgument arguments) throws ValidationException;
+    public String getCommandName() {
+        return commandName;
+    }
 }

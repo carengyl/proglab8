@@ -1,6 +1,8 @@
 import UDPutil.Request;
 import clientUtil.ClientSocketHandler;
+import clientUtil.CommandToSend;
 import commandLine.CommandReader;
+import commands.AbstractCommand;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
 import exceptions.NoUserInputException;
@@ -8,21 +10,38 @@ import exceptions.NoUserInputException;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class ClientHandler {
     private final Scanner scanner = new Scanner(System.in);
-    private final CommandReader commandReader = new CommandReader();
+    private CommandReader commandReader;
     private ClientSocketHandler clientSocketHandler;
     private static final int MIN_PORT = 1;
-    private final int MAX_PORT = 2^16;
+    private final int MAX_PORT = 65536;
 
     private boolean working = true;
 
     public void start() {
         inputAddress();
         inputPort();
+        try {
+            commandReader = new CommandReader(getCommandsFromServer());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        while (working) {
+            Optional<CommandToSend> optionalCommand = commandReader.readCommandsFromConsole(scanner, clientSocketHandler);
+            if (optionalCommand.isPresent()) {
+
+            }
+        }
+    }
+
+    private void initClientCommands() {
+        //commands
     }
 
     public void toggleStatus() {
@@ -52,7 +71,7 @@ public class ClientHandler {
 
     private void inputPort() {
         try {
-            boolean useDefaultPort = Validators.validateBooleanInput("Do you want to use a default server address", scanner);
+            boolean useDefaultPort = Validators.validateBooleanInput("Do you want to use a default server port", scanner);
             if (!useDefaultPort) {
                 Integer port = Validators.validateInput(arg -> (((int) arg) <= MAX_PORT) && (((int) arg) >= MIN_PORT),
                 "Enter remote host port, it should be in [" + MIN_PORT + ";" + MAX_PORT + "]",
@@ -69,10 +88,8 @@ public class ClientHandler {
         }
     }
 
-    private void getCommandsFromServer() throws IOException {
+    private HashMap<String, AbstractCommand> getCommandsFromServer() throws IOException {
         clientSocketHandler.sendRequest(new Request());
-        clientSocketHandler.receiveResponse();
+        return clientSocketHandler.receiveResponse().getAvailableCommands();
     }
-
-
 }
