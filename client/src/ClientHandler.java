@@ -1,15 +1,20 @@
 import UDPutil.Request;
+import UDPutil.Response;
 import clientUtil.ClientSocketHandler;
 import clientUtil.CommandToSend;
+import clientUtil.RequestCreator;
 import commandLine.CommandReader;
 import commands.AbstractCommand;
+import commonUtil.HumanBeingFactory;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
 import exceptions.NoUserInputException;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -19,29 +24,83 @@ public class ClientHandler {
     private final Scanner scanner = new Scanner(System.in);
     private CommandReader commandReader;
     private ClientSocketHandler clientSocketHandler;
+    private final RequestCreator requestCreator = new RequestCreator();
     private static final int MIN_PORT = 1;
-    private final int MAX_PORT = 65536;
-
+    private static final int MAX_PORT = 65536;
     private boolean working = true;
 
     public void start() {
-        inputAddress();
-        inputPort();
+        this.inputAddress();
+        this.inputPort();
         try {
             commandReader = new CommandReader(getCommandsFromServer());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            this.initClientCommands();
+        } catch (IOException | ClassNotFoundException e) {
+            OutputUtil.printErrorMessage("The response with available commands, came damaged. Forced shut down...");
+            this.toggleStatus();
         }
         while (working) {
             Optional<CommandToSend> optionalCommand = commandReader.readCommandsFromConsole(scanner, clientSocketHandler);
             if (optionalCommand.isPresent()) {
-
+                CommandToSend commandToSend = optionalCommand.get();
+                if (this.sendCommandRequest(commandToSend)) {
+                    try {
+                        this.receiveResponse();
+                    } catch (NoUserInputException e) {
+                        OutputUtil.printErrorMessage(e.getMessage());
+                        this.toggleStatus();
+                    }
+                }
             }
         }
     }
 
+    private boolean sendCommandRequest(CommandToSend command) {
+        Request request = requestCreator.createRequestOfCommand(command);
+        return sendRequest(request);
+    }
+
+    private boolean sendHumanBeingRequest() throws NoUserInputException {
+        HumanBeingFactory humanBeingFactory = new HumanBeingFactory();
+        humanBeingFactory.setVariables();
+        Request request = new Request(humanBeingFactory.getCreatedHumanBeing());
+        return sendRequest(request);
+    }
+
+    private boolean sendRequest(Request request) {
+        try {
+            request.setClientInfo(clientSocketHandler.getAddress() + ":" + clientSocketHandler.getPort());
+            request.setSendTime(LocalTime.now());
+            clientSocketHandler.sendRequest(request);
+            return true;
+        } catch (IOException e) {
+            OutputUtil.printErrorMessage("An error occurred while serializing the request, try again");
+            return false;
+        }
+    }
+
+    private void receiveResponse() throws NoUserInputException {
+        try {
+            Response response = clientSocketHandler.receiveResponse();
+            if (response.hasRequestHumanBeing()) {
+                if (sendHumanBeingRequest()) {
+                    receiveResponse();
+                }
+            }
+            OutputUtil.printSuccessfulMessage(response.toString());
+        } catch (SocketTimeoutException socketTimeoutException) {
+            OutputUtil.printErrorMessage("The waiting time for a response from the server has been exceeded, try again later");
+        } catch (IOException ioException) {
+            OutputUtil.printErrorMessage("An error occurred while receiving a response from the server:");
+            ioException.printStackTrace();
+        } catch (ClassNotFoundException classNotFoundException) {
+            OutputUtil.printErrorMessage("The response came damaged");
+        }
+    }
+
     private void initClientCommands() {
-        //commands
+        //add commands
+        commandReader.addClientCommand(null);
     }
 
     public void toggleStatus() {
@@ -80,6 +139,7 @@ public class ClientHandler {
                         Integer::parseInt,
                         false,
                         scanner);
+                //noinspection ConstantConditions, NullPointer handled in Validators class
                 clientSocketHandler.setPort(port);
             }
         } catch (NoUserInputException |NoSuchElementException e) {
@@ -88,7 +148,7 @@ public class ClientHandler {
         }
     }
 
-    private HashMap<String, AbstractCommand> getCommandsFromServer() throws IOException {
+    private HashMap<String, AbstractCommand> getCommandsFromServer() throws IOException, ClassNotFoundException {
         clientSocketHandler.sendRequest(new Request());
         return clientSocketHandler.receiveResponse().getAvailableCommands();
     }

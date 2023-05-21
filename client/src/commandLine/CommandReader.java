@@ -5,6 +5,8 @@ import clientUtil.CommandToSend;
 import commands.AbstractCommand;
 import commands.CommandArgument;
 import commonUtil.OutputUtil;
+import exceptions.InvalidNumberOfArgsException;
+import exceptions.ValidationException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,6 +40,12 @@ public class CommandReader {
             executableCommand.executeCommand(argument);
             return Optional.empty();
         } else if (availableServerCommands.containsKey(commandName)) {
+            AbstractCommand command = availableServerCommands.get(commandName);
+            try {
+                command.validateArguments(argument);
+            } catch (ValidationException | InvalidNumberOfArgsException e) {
+                OutputUtil.printErrorMessage(e.getMessage());
+            }
             CommandToSend commandToSend = new CommandToSend(commandName, argument);
             return Optional.of(commandToSend);
         } else {

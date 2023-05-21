@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 
 public class ClientSocketHandler {
     private final int DEFAULT_PORT = 1337;
-    private final int RESPONSE_TIME = 2000;
+    private final int RESPONSE_TIME = 4000;
     private final DatagramSocket datagramSocket;
     private int port;
     private String address = "localhost";
@@ -39,12 +39,20 @@ public class ClientSocketHandler {
         datagramSocket.send(datagramPacket);
     }
 
-    public Response receiveResponse() throws IOException {
+    public Response receiveResponse() throws IOException, ClassNotFoundException {
         datagramSocket.setSoTimeout(RESPONSE_TIME);
         int receivedSize = datagramSocket.getReceiveBufferSize();
         byte[] bytes = new byte[receivedSize];
         DatagramPacket receivedPacket = new DatagramPacket(bytes, bytes.length);
         datagramSocket.receive(receivedPacket);
         return Deserializer.deserializeResponse(receivedPacket.getData());
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getAddress() {
+        return address;
     }
 }
