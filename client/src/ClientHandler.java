@@ -36,7 +36,7 @@ public class ClientHandler {
             commandReader = new CommandReader(getCommandsFromServer());
             this.initClientCommands();
         } catch (IOException | ClassNotFoundException e) {
-            OutputUtil.printErrorMessage("The response with available commands, came damaged. Forced shut down...");
+            OutputUtil.printErrorMessage("Unable to access available commands from server. Forced shut down...");
             this.toggleStatus();
         }
         while (working) {
