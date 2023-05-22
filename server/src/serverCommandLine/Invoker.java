@@ -1,5 +1,7 @@
 package serverCommandLine;
 
+import UDPutil.Request;
+import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
 import commonUtil.OutputUtil;
@@ -16,7 +18,12 @@ public class Invoker {
         this.SERVER_AVAILABLE_COMMAND.put(command.getCommandName(), command);
     }
 
-    public void performCommand(String commandName, CommandArgument argument) throws NoUserInputException {
+    public Response executeClientCommand(Request request) {
+        //TO-DO 22.05.2023 execute client command
+        return null;
+    }
+
+    public void executeServerCommand(String commandName, CommandArgument argument) throws NoUserInputException {
         if (SERVER_AVAILABLE_COMMAND.containsKey(commandName)) {
             try {
                 AbstractCommand executableCommand = SERVER_AVAILABLE_COMMAND.get(commandName);

@@ -24,5 +24,6 @@ public class Server {
             collection = new CollectionOfHumanBeings(null);
         }
         ServerHandler serverHandler = new ServerHandler(collection);
+        serverHandler.startServerHandler();
     }
 }
