@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Optional;
 
 public abstract class AbstractCommand implements Serializable {
+    private boolean needsComplexData;
     private final String commandName;
     private final String commandDescription;
     private final int numberOfArgs;
@@ -50,5 +51,13 @@ public abstract class AbstractCommand implements Serializable {
     public String toString() {
         return "Command name: " + commandName + ", description: " + commandDescription
                 + ((numberOfArgs == 0) ? "" : ", args: " + argsDescription);
+    }
+
+    public boolean isNeedsComplexData() {
+        return needsComplexData;
+    }
+
+    public void setNeedsComplexData(boolean needsComplexData) {
+        this.needsComplexData = needsComplexData;
     }
 }

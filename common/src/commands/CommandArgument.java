@@ -1,5 +1,7 @@
 package commands;
 
+import entities.HumanBeing;
+
 import java.io.Serializable;
 
 public class CommandArgument implements Serializable {
@@ -11,6 +13,7 @@ public class CommandArgument implements Serializable {
     private double doubleArg;
     private long longArg;
     private boolean booleanArg;
+    private HumanBeing humanBeingArgument;
     public CommandArgument(String[] args) {
         this.numberOfArgs = args.length;
         currentArgNumber = 0;
@@ -65,5 +68,13 @@ public class CommandArgument implements Serializable {
 
     public void setBooleanArg(boolean booleanArg) {
         this.booleanArg = booleanArg;
+    }
+
+    public HumanBeing getHumanBeingArgument() {
+        return humanBeingArgument;
+    }
+
+    public void setHumanBeingArgument(HumanBeing humanBeingArgument) {
+        this.humanBeingArgument = humanBeingArgument;
     }
 }

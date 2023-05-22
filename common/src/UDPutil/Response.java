@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public class Response implements Serializable {
+    private AbstractCommand command;
     private String responseMessage;
     private HashMap<Long, HumanBeing> responseCollection;
     private HumanBeing responseHumanBeing;
@@ -21,8 +22,14 @@ public class Response implements Serializable {
         this.responseMessage = responseMessage;
     }
 
-    public Response(HumanBeing humanBeing) {
+    public Response(String responseMessage, HumanBeing humanBeing) {
+        this.responseMessage = responseMessage;
         this.responseHumanBeing = humanBeing;
+    }
+
+    public Response(AbstractCommand command) {
+        requestHumanBeing = true;
+        this.command = command;
     }
 
     public HumanBeing getResponseHumanBeing() {
@@ -47,6 +54,10 @@ public class Response implements Serializable {
 
     public void setRequestHumanBeing() {
         this.requestHumanBeing = true;
+    }
+
+    public AbstractCommand getCommand() {
+        return command;
     }
 
     @Override

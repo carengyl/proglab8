@@ -2,8 +2,8 @@ package clientUtil;
 
 import UDPutil.Request;
 import UDPutil.Response;
-import clientCommands.ExitCommand;
-import clientCommands.HelpCommand;
+import localCommands.ExitCommand;
+import localCommands.HelpCommand;
 import commandLine.CommandReader;
 import commands.AbstractCommand;
 import commonUtil.HumanBeingFactory;

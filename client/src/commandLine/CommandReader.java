@@ -3,7 +3,9 @@ package commandLine;
 import clientUtil.CommandToSend;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commonUtil.HumanBeingFactory;
 import commonUtil.OutputUtil;
+import entities.HumanBeing;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
@@ -48,6 +50,12 @@ public class CommandReader {
             try {
                 AbstractCommand command = availableServerCommands.get(commandName);
                 CommandArgument validatedArg = command.validateArguments(argument);
+                if (command.isNeedsComplexData()) {
+                    HumanBeingFactory humanBeingFactory = new HumanBeingFactory();
+                    humanBeingFactory.setVariables();
+                    HumanBeing humanBeing = humanBeingFactory.getCreatedHumanBeing();
+                    validatedArg.setHumanBeingArgument(humanBeing);
+                }
                 CommandToSend commandToSend = new CommandToSend(commandName, validatedArg);
                 return Optional.of(commandToSend);
             } catch (ValidationException | InvalidNumberOfArgsException e) {

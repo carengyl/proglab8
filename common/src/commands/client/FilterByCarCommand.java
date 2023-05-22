@@ -33,7 +33,7 @@ public class FilterByCarCommand extends AbstractCommand implements Serializable 
             for (long key : collection.getHumanBeings().keySet()) {
                 if (collection.getHumanBeings().get(key).getCar() != null) {
                     if (Objects.equals(collection.getHumanBeings().get(key).getCar().isCool(), car)) {
-                        stringBuilder.append(collection.getHumanBeings().get(key));
+                        stringBuilder.append(collection.getHumanBeings().get(key)).append("\n");
                     }
                 }
             }

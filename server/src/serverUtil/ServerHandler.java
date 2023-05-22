@@ -1,15 +1,13 @@
 package serverUtil;
 
-import commands.client.ClearCommand;
-import commands.client.CountGreaterThanMoodCommand;
-import commands.client.CountLessThanMinutesOfWaitingCommand;
-import commands.client.FilterByCarCommand;
+import commands.client.*;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
 import entities.CollectionOfHumanBeings;
 import exceptions.NoUserInputException;
 import serverCommandLine.Invoker;
 import serverCommandLine.ServerCommandReader;
+import serverCommands.ServerExitCommand;
 import threads.ConsoleThread;
 import threads.RequestThread;
 
@@ -44,6 +42,15 @@ public class ServerHandler {
         invoker.addClientCommand(new CountGreaterThanMoodCommand(collection));
         invoker.addClientCommand(new CountLessThanMinutesOfWaitingCommand(collection));
         invoker.addClientCommand(new FilterByCarCommand(collection));
+        invoker.addClientCommand(new InfoCommand(collection));
+        invoker.addClientCommand(new InsertCommand(collection));
+        invoker.addClientCommand(new RemoveGreaterCommand(collection));
+        invoker.addClientCommand(new RemoveKeyCommand(collection));
+        invoker.addClientCommand(new RemoveLowerKeyCommand(collection));
+        invoker.addClientCommand(new ShowCommand(collection));
+        invoker.addClientCommand(new UpdateCommand(collection));
+
+        invoker.addServerCommand(new ServerExitCommand());
     }
 
     public static boolean isRunning() {

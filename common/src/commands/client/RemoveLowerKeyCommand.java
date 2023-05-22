@@ -12,28 +12,24 @@ import exceptions.ValidationException;
 import java.io.Serializable;
 import java.util.Optional;
 
-public class InsertCommand extends AbstractCommand implements Serializable {
+public class RemoveLowerKeyCommand extends AbstractCommand implements Serializable {
     private final CollectionOfHumanBeings collection;
 
-    public InsertCommand(CollectionOfHumanBeings collection) {
-        super("insert", "Add element to collection by @key", 1, "@key - unique long of element");
+    public RemoveLowerKeyCommand(CollectionOfHumanBeings collection) {
+        super("remove_lower_key", "Remove elements from collection, which key is lower than @key", 1, "@key - (long) unique key of element in collection");
         this.collection = collection;
-        this.setNeedsComplexData(true);
     }
 
     @Override
     public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        long key = argument.getLongArg();
-        collection.addByKey(key, argument.getHumanBeingArgument());
-        return Optional.of(new Response("Added Human Being by key: " + key,
-                argument.getHumanBeingArgument()));
+        return Optional.of(new Response(collection.removeLowerKey(argument.getLongArg())));
     }
 
     @Override
     public CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException {
         Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
-        long key = Validators.validateArg(arg -> (!collection.getHumanBeings().containsKey((long) arg)),
-                "Key isn't unique",
+        long key = Validators.validateArg(arg -> (collection.getHumanBeings().containsKey((long) arg)),
+                "Key not found",
                 Long::parseLong,
                 arguments.getArg());
         arguments.setLongArg(key);

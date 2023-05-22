@@ -12,31 +12,29 @@ import exceptions.ValidationException;
 import java.io.Serializable;
 import java.util.Optional;
 
-public class InsertCommand extends AbstractCommand implements Serializable {
+public class RemoveGreaterCommand extends AbstractCommand implements Serializable {
     private final CollectionOfHumanBeings collection;
 
-    public InsertCommand(CollectionOfHumanBeings collection) {
-        super("insert", "Add element to collection by @key", 1, "@key - unique long of element");
+    public RemoveGreaterCommand(CollectionOfHumanBeings collection) {
+        super("remove_greater", "Remove all elements, which are greater than {element}");
         this.collection = collection;
         this.setNeedsComplexData(true);
     }
 
     @Override
     public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        long key = argument.getLongArg();
-        collection.addByKey(key, argument.getHumanBeingArgument());
-        return Optional.of(new Response("Added Human Being by key: " + key,
-                argument.getHumanBeingArgument()));
+        StringBuilder stringBuilder = new StringBuilder();
+        for (long key: collection.getHumanBeings().keySet()) {
+            if (collection.getHumanBeings().get(key).compareTo(argument.getHumanBeingArgument()) > 0) {
+                stringBuilder.append(collection.removeByKey(key)).append("\n");
+            }
+        }
+        return Optional.of(new Response(stringBuilder.toString()));
     }
 
     @Override
     public CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException {
         Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
-        long key = Validators.validateArg(arg -> (!collection.getHumanBeings().containsKey((long) arg)),
-                "Key isn't unique",
-                Long::parseLong,
-                arguments.getArg());
-        arguments.setLongArg(key);
         return arguments;
     }
 }

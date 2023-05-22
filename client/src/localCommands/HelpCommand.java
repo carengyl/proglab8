@@ -1,4 +1,4 @@
-package clientCommands;
+package localCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;

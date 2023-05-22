@@ -12,31 +12,31 @@ import exceptions.ValidationException;
 import java.io.Serializable;
 import java.util.Optional;
 
-public class InsertCommand extends AbstractCommand implements Serializable {
+public class ShowCommand extends AbstractCommand implements Serializable {
     private final CollectionOfHumanBeings collection;
-
-    public InsertCommand(CollectionOfHumanBeings collection) {
-        super("insert", "Add element to collection by @key", 1, "@key - unique long of element");
+    public ShowCommand(CollectionOfHumanBeings collection) {
+        super("show", "Show data about collection and elements");
         this.collection = collection;
-        this.setNeedsComplexData(true);
     }
 
     @Override
     public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        long key = argument.getLongArg();
-        collection.addByKey(key, argument.getHumanBeingArgument());
-        return Optional.of(new Response("Added Human Being by key: " + key,
-                argument.getHumanBeingArgument()));
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Collection from file: ").append(collection.getFileName()).append("\n");
+        Optional<Response> optionalResponse;
+        if (!collection.getHumanBeings().isEmpty()) {
+            for (long key : collection.getHumanBeings().keySet()) {
+                stringBuilder.append("Key: ").append(key).append("; ").append(collection.getHumanBeings().get(key).toString()).append("\n");
+            }
+        } else {
+            stringBuilder.append("Collection is empty");
+        }
+        return Optional.of(new Response(stringBuilder.toString()));
     }
 
     @Override
     public CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException {
         Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
-        long key = Validators.validateArg(arg -> (!collection.getHumanBeings().containsKey((long) arg)),
-                "Key isn't unique",
-                Long::parseLong,
-                arguments.getArg());
-        arguments.setLongArg(key);
         return arguments;
     }
 }

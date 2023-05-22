@@ -2,7 +2,6 @@ package entities;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import commonUtil.OutputUtil;
 
 import java.io.Serializable;
 import java.nio.file.Path;
@@ -141,13 +140,15 @@ public class CollectionOfHumanBeings implements Serializable {
      *
      * @param greaterKey given key
      */
-    public void removeLowerKey(long greaterKey) {
+    public String removeLowerKey(long greaterKey) {
         Set<Long> keysCopy = Set.copyOf(humanBeings.keySet());
+        StringBuilder stringBuilder = new StringBuilder();
         for(long key: keysCopy) {
             if (key < greaterKey) {
-                this.removeByKey(key);
+                stringBuilder.append(removeByKey(key)).append("\n");
             }
         }
+        return stringBuilder.toString();
     }
 
     /**
@@ -155,9 +156,9 @@ public class CollectionOfHumanBeings implements Serializable {
      *
      * @param key given key
      */
-    public void removeByKey(long key) {
+    public String removeByKey(long key) {
         humanBeings.remove(key);
-        OutputUtil.printSuccessfulMessage("Deleted element by key: " + key);
+        return "Deleted element by key:" + key;
     }
 
     @Override

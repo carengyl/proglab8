@@ -1,4 +1,4 @@
-package clientCommands;
+package localCommands;
 
 import UDPutil.Response;
 import clientUtil.ClientHandler;
