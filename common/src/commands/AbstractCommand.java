@@ -1,8 +1,11 @@
 package commands;
 
+import UDPutil.Response;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
+
+import java.util.Optional;
 
 public abstract class AbstractCommand {
     private final String commandName;
@@ -24,7 +27,7 @@ public abstract class AbstractCommand {
         this.argsDescription = argsDescription;
     }
 
-    public abstract void executeCommand(CommandArgument argument) throws NoUserInputException;
+    public abstract Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException;
     public abstract CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException;
 
     public int getNumberOfArgs() {
