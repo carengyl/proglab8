@@ -57,4 +57,12 @@ public class CommandReader {
         OutputUtil.printErrorMessage("Command " + commandName + " not found. Type \"help\" to see available commands.");
         return Optional.empty();
     }
+
+    public HashMap<String, AbstractCommand> getAvailableClientCommands() {
+        return availableClientCommands;
+    }
+
+    public HashMap<String, AbstractCommand> getAvailableServerCommands() {
+        return availableServerCommands;
+    }
 }

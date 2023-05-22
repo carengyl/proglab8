@@ -3,6 +3,7 @@ package clientUtil;
 import UDPutil.Request;
 import UDPutil.Response;
 import clientCommands.ExitCommand;
+import clientCommands.HelpCommand;
 import commandLine.CommandReader;
 import commands.AbstractCommand;
 import commonUtil.HumanBeingFactory;
@@ -106,7 +107,7 @@ public class ClientHandler {
 
     private void initClientCommands() {
         commandReader.addClientCommand(new ExitCommand(this));
-
+        commandReader.addClientCommand(new HelpCommand(commandReader.getAvailableClientCommands(), commandReader.getAvailableServerCommands()));
     }
 
     public void toggleStatus() {
