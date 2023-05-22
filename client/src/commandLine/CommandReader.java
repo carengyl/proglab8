@@ -6,6 +6,7 @@ import commands.AbstractCommand;
 import commands.CommandArgument;
 import commonUtil.OutputUtil;
 import exceptions.InvalidNumberOfArgsException;
+import exceptions.NoUserInputException;
 import exceptions.ValidationException;
 
 import java.util.Arrays;
@@ -29,28 +30,32 @@ public class CommandReader {
         this.availableClientCommands.put(command.getCommandName(), command);
     }
 
-    public Optional<CommandToSend> readCommandsFromConsole(Scanner scanner, ClientSocketHandler socketHandler) {
+    public Optional<CommandToSend> readCommandsFromConsole(Scanner scanner, ClientSocketHandler socketHandler) throws NoUserInputException {
         OutputUtil.printSuccessfulMessage(">");
         String[] splitString = scanner.nextLine().replaceAll("\s{2,}", " ").strip().split(" ");
         String commandName = splitString[0];
         CommandArgument argument = new CommandArgument(Arrays.copyOfRange(splitString, 1, splitString.length));
         //In case of name coreference client commands have higher priority
         if (availableClientCommands.containsKey(commandName)) {
-            AbstractCommand executableCommand = availableClientCommands.get(commandName);
-            executableCommand.executeCommand(argument);
-            return Optional.empty();
-        } else if (availableServerCommands.containsKey(commandName)) {
-            AbstractCommand command = availableServerCommands.get(commandName);
             try {
-                command.validateArguments(argument);
+                AbstractCommand executableCommand = availableClientCommands.get(commandName);
+                CommandArgument validatedArgs = executableCommand.validateArguments(argument);
+                executableCommand.executeCommand(validatedArgs);
+                return Optional.empty();
             } catch (ValidationException | InvalidNumberOfArgsException e) {
                 OutputUtil.printErrorMessage(e.getMessage());
             }
-            CommandToSend commandToSend = new CommandToSend(commandName, argument);
-            return Optional.of(commandToSend);
-        } else {
-            OutputUtil.printErrorMessage("Command " + commandName + " not found. Type \"help\" to see available commands.");
-            return Optional.empty();
+        } else if (availableServerCommands.containsKey(commandName)) {
+            try {
+                AbstractCommand command = availableServerCommands.get(commandName);
+                CommandArgument validatedArg = command.validateArguments(argument);
+                CommandToSend commandToSend = new CommandToSend(commandName, validatedArg);
+                return Optional.of(commandToSend);
+            } catch (ValidationException | InvalidNumberOfArgsException e) {
+                OutputUtil.printErrorMessage(e.getMessage());
+            }
         }
+        OutputUtil.printErrorMessage("Command " + commandName + " not found. Type \"help\" to see available commands.");
+        return Optional.empty();
     }
 }

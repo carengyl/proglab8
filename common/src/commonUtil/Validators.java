@@ -12,9 +12,9 @@ import java.util.function.Predicate;
 public final class Validators {
     private Validators() {}
 
-    public static void validateNumberOfArgs(String[] commandArgs, int numberOfArgs) throws InvalidNumberOfArgsException {
-        if (commandArgs.length != numberOfArgs) {
-            throw new InvalidNumberOfArgsException(numberOfArgs, commandArgs.length);
+    public static void validateNumberOfArgs(int gotNumberOfArgs, int numberOfArgs) throws InvalidNumberOfArgsException {
+        if (gotNumberOfArgs != numberOfArgs) {
+            throw new InvalidNumberOfArgsException(numberOfArgs, gotNumberOfArgs);
         }
     }
 

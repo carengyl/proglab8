@@ -1,8 +1,8 @@
+package clientUtil;
+
 import UDPutil.Request;
 import UDPutil.Response;
-import clientUtil.ClientSocketHandler;
-import clientUtil.CommandToSend;
-import clientUtil.RequestCreator;
+import clientCommands.ExitCommand;
 import commandLine.CommandReader;
 import commands.AbstractCommand;
 import commonUtil.HumanBeingFactory;
@@ -40,17 +40,23 @@ public class ClientHandler {
             this.toggleStatus();
         }
         while (working) {
-            Optional<CommandToSend> optionalCommand = commandReader.readCommandsFromConsole(scanner, clientSocketHandler);
-            if (optionalCommand.isPresent()) {
-                CommandToSend commandToSend = optionalCommand.get();
-                if (this.sendCommandRequest(commandToSend)) {
-                    try {
-                        this.receiveResponse();
-                    } catch (NoUserInputException e) {
-                        OutputUtil.printErrorMessage(e.getMessage());
-                        this.toggleStatus();
+            Optional<CommandToSend> optionalCommand = null;
+            try {
+                optionalCommand = commandReader.readCommandsFromConsole(scanner, clientSocketHandler);
+                if (optionalCommand.isPresent()) {
+                    CommandToSend commandToSend = optionalCommand.get();
+                    if (this.sendCommandRequest(commandToSend)) {
+                        try {
+                            this.receiveResponse();
+                        } catch (NoUserInputException e) {
+                            OutputUtil.printErrorMessage(e.getMessage());
+                            this.toggleStatus();
+                        }
                     }
                 }
+            } catch (NoUserInputException e) {
+                OutputUtil.printErrorMessage(e.getMessage());
+                toggleStatus();
             }
         }
     }
@@ -99,8 +105,8 @@ public class ClientHandler {
     }
 
     private void initClientCommands() {
-        //add commands
-        commandReader.addClientCommand(null);
+        commandReader.addClientCommand(new ExitCommand(this));
+
     }
 
     public void toggleStatus() {
