@@ -2,6 +2,7 @@ package serverUtil;
 
 import commonUtil.OutputUtil;
 import entities.Car;
+import entities.CollectionOfHumanBeings;
 import entities.Coordinates;
 import entities.HumanBeing;
 import jakarta.validation.ConstraintViolation;

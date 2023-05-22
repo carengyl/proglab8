@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.security.AnyTypePermission;
 import commonUtil.OutputUtil;
 import entities.Car;
+import entities.CollectionOfHumanBeings;
 import entities.Coordinates;
 import entities.HumanBeing;
 

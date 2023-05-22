@@ -7,11 +7,12 @@ import commonUtil.Validators;
 import entities.Mood;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.ValidationException;
-import serverUtil.CollectionOfHumanBeings;
+import entities.CollectionOfHumanBeings;
 
+import java.io.Serializable;
 import java.util.Optional;
 
-public class CountLessThanMinutesOfWaitingCommand extends AbstractCommand {
+public class CountLessThanMinutesOfWaitingCommand extends AbstractCommand implements Serializable {
     private final CollectionOfHumanBeings collection;
     public CountLessThanMinutesOfWaitingCommand(CollectionOfHumanBeings collection) {
         super("count_less_than_minutes_of_waiting",

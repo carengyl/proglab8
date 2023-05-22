@@ -1,6 +1,8 @@
 package commands;
 
-public class CommandArgument {
+import java.io.Serializable;
+
+public class CommandArgument implements Serializable {
     private final int numberOfArgs;
     private int currentArgNumber;
     private String arg;

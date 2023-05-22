@@ -1,5 +1,5 @@
 import commonUtil.OutputUtil;
-import serverUtil.CollectionOfHumanBeings;
+import entities.CollectionOfHumanBeings;
 import serverUtil.ServerHandler;
 import serverUtil.XMLParser;
 

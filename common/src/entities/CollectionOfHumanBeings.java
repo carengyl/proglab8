@@ -1,10 +1,11 @@
-package serverUtil;
+package entities;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import entities.HumanBeing;
 import commonUtil.OutputUtil;
 
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -18,7 +19,7 @@ import java.util.Set;
  * @author carengyl
  */
 @XStreamAlias("collection")
-public class CollectionOfHumanBeings {
+public class CollectionOfHumanBeings implements Serializable {
     /**
      * File name field
      */

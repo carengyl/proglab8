@@ -1,9 +1,11 @@
 package entities;
 
+import java.io.Serializable;
+
 /**
  * Data structure for Weapon type
  */
-public enum WeaponType {
+public enum WeaponType implements Serializable {
     AXE,
     PISTOL,
     SHOTGUN,

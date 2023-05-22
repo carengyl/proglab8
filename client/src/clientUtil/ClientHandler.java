@@ -82,6 +82,7 @@ public class ClientHandler {
             return true;
         } catch (IOException e) {
             OutputUtil.printErrorMessage("An error occurred while serializing the request, try again");
+            e.printStackTrace();
             return false;
         }
     }

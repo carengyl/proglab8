@@ -5,9 +5,10 @@ import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
 
+import java.io.Serializable;
 import java.util.Optional;
 
-public abstract class AbstractCommand {
+public abstract class AbstractCommand implements Serializable {
     private final String commandName;
     private final String commandDescription;
     private final int numberOfArgs;

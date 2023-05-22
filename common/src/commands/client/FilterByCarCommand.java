@@ -7,12 +7,13 @@ import commonUtil.Validators;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
-import serverUtil.CollectionOfHumanBeings;
+import entities.CollectionOfHumanBeings;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-public class FilterByCarCommand extends AbstractCommand {
+public class FilterByCarCommand extends AbstractCommand implements Serializable {
     private final CollectionOfHumanBeings collection;
 
     public FilterByCarCommand(CollectionOfHumanBeings collection) {

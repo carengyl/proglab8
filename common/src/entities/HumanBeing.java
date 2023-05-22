@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -15,7 +16,7 @@ import java.time.format.DateTimeFormatter;
  * @author carengyl
  */
 @XStreamAlias("humanBeing")
-public class HumanBeing implements Comparable<HumanBeing>{
+public class HumanBeing implements Comparable<HumanBeing>, Serializable {
 
     /**
      * Current ID field for ID generation

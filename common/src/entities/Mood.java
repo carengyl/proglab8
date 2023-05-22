@@ -1,9 +1,11 @@
 package entities;
 
+import java.io.Serializable;
+
 /**
  * Data structure for Mood
  */
-public enum Mood {
+public enum Mood implements Serializable {
     LONGING,
     CALM,
     RAGE,

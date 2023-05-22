@@ -3,13 +3,15 @@ package entities;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.io.Serializable;
+
 
 /**
  * Data structure for Car
  *
  * @author carengyl
  */
-public class Car {
+public class Car implements Serializable {
     /**
      * Cool field
      */

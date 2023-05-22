@@ -5,11 +5,12 @@ import commands.AbstractCommand;
 import commands.CommandArgument;
 import commonUtil.Validators;
 import exceptions.InvalidNumberOfArgsException;
-import serverUtil.CollectionOfHumanBeings;
+import entities.CollectionOfHumanBeings;
 
+import java.io.Serializable;
 import java.util.Optional;
 
-public class ClearCommand extends AbstractCommand {
+public class ClearCommand extends AbstractCommand implements Serializable {
     private final CollectionOfHumanBeings collection;
 
     public ClearCommand(CollectionOfHumanBeings collection) {

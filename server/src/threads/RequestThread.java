@@ -33,6 +33,7 @@ public class RequestThread extends Thread {
                     }
                 }
             } catch (IOException e) {
+                e.printStackTrace();
                 OutputUtil.printErrorMessage("An error occurred while deserializing the request, try again");
             } catch (ClassNotFoundException e) {
                 OutputUtil.printErrorMessage(e.getMessage());

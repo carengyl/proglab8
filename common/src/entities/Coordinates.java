@@ -3,10 +3,12 @@ package entities;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
+
 /**
  * Data structure for Coordinates
  */
-public class Coordinates implements Comparable<Coordinates> {
+public class Coordinates implements Comparable<Coordinates>, Serializable {
     /**
      * X coordinate field
      */

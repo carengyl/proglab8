@@ -1,7 +1,12 @@
 package serverUtil;
 
+import commands.client.ClearCommand;
+import commands.client.CountGreaterThanMoodCommand;
+import commands.client.CountLessThanMinutesOfWaitingCommand;
+import commands.client.FilterByCarCommand;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
+import entities.CollectionOfHumanBeings;
 import exceptions.NoUserInputException;
 import serverCommandLine.Invoker;
 import serverCommandLine.ServerCommandReader;
@@ -35,7 +40,10 @@ public class ServerHandler {
     }
 
     private void initCommands() {
-        //invoker.addCommand
+        invoker.addClientCommand(new ClearCommand(collection));
+        invoker.addClientCommand(new CountGreaterThanMoodCommand(collection));
+        invoker.addClientCommand(new CountLessThanMinutesOfWaitingCommand(collection));
+        invoker.addClientCommand(new FilterByCarCommand(collection));
     }
 
     public static boolean isRunning() {

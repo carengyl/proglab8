@@ -1,11 +1,13 @@
 package entities;
 
+import java.io.Serializable;
+
 /**
  * Data structure for Car brand.
  *
  * @author carengyl
  */
-public enum CarBrand {
+public enum CarBrand implements Serializable {
     COOL_BRAND(true),
     NOT_COOL_BRAND(false);
     /**
