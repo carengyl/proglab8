@@ -39,10 +39,10 @@ public class ClientHandler {
             OutputUtil.printErrorMessage("Unable to access available commands from server. Forced shut down...");
             this.toggleStatus();
         }
+
         while (working) {
-            Optional<CommandToSend> optionalCommand = null;
             try {
-                optionalCommand = commandReader.readCommandsFromConsole(scanner, clientSocketHandler);
+                Optional<CommandToSend> optionalCommand = commandReader.readCommandsFromConsole(scanner);
                 if (optionalCommand.isPresent()) {
                     CommandToSend commandToSend = optionalCommand.get();
                     if (this.sendCommandRequest(commandToSend)) {

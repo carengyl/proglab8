@@ -30,7 +30,7 @@ public class CommandReader {
         this.availableClientCommands.put(command.getCommandName(), command);
     }
 
-    public Optional<CommandToSend> readCommandsFromConsole(Scanner scanner, ClientSocketHandler socketHandler) throws NoUserInputException {
+    public Optional<CommandToSend> readCommandsFromConsole(Scanner scanner) throws NoUserInputException {
         OutputUtil.printSuccessfulMessage(">");
         String[] splitString = scanner.nextLine().replaceAll("\s{2,}", " ").strip().split(" ");
         String commandName = splitString[0];
