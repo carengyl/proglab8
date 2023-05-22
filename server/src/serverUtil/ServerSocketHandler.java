@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ServerSocketHandler {
-    private final int DEFAULT_PORT = 228;
+    private final int DEFAULT_PORT = 1337;
     private final int SELECTOR_DELAY = 100;
     private Selector selector;
     private DatagramChannel datagramChannel;
