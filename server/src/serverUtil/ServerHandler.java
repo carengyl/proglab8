@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ServerHandler {
-    private static boolean running;
+    private static boolean running = true;
     private final Scanner scanner = new Scanner(System.in);
     private final int MAX_PORT = 65535;
     private final int MIN_PORT = 1;

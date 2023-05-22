@@ -16,7 +16,7 @@ public class ServerCommandReader {
     }
 
     public void readCommandFromConsole() throws NoUserInputException {
-        OutputUtil.printSuccessfulMessageOneStrip(">");
+        OutputUtil.printSuccessfulMessageOneStrip("> ");
         String[] splitString = scanner.nextLine().replaceAll("\s{2,}", " ").strip().split(" ");
         String commandName = splitString[0];
         CommandArgument argument = new CommandArgument(Arrays.copyOfRange(splitString, 1, splitString.length));

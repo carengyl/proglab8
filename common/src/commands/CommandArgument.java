@@ -1,21 +1,24 @@
 package commands;
 
 public class CommandArgument {
-    private boolean multipleArgs = false;
+    private final int numberOfArgs;
     private int currentArgNumber;
     private String arg;
     private String[] args;
 
     public CommandArgument(String[] args) {
-        if (args.length > 1) {
-            multipleArgs = true;
+        this.numberOfArgs = args.length;
+        currentArgNumber = 0;
+        if (numberOfArgs > 1) {
             this.args = args;
+            arg = args[0];
+        } else if (numberOfArgs == 1) {
+            arg = args[0];
         }
-        this.arg = args[0];
     }
 
     public String getArg() {
-        if (multipleArgs && currentArgNumber < args.length - 1) {
+        if (numberOfArgs > 1 && currentArgNumber < args.length - 1) {
             String prevArg = arg;
             arg = args[currentArgNumber++];
             return prevArg;
@@ -24,9 +27,6 @@ public class CommandArgument {
     }
 
     public int getNumberOfArgs() {
-        if (multipleArgs) {
-            return args.length;
-        }
-        return 1;
+        return numberOfArgs;
     }
 }

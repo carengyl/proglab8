@@ -1,6 +1,5 @@
 package commandLine;
 
-import clientUtil.ClientSocketHandler;
 import clientUtil.CommandToSend;
 import commands.AbstractCommand;
 import commands.CommandArgument;
@@ -31,7 +30,7 @@ public class CommandReader {
     }
 
     public Optional<CommandToSend> readCommandsFromConsole(Scanner scanner) throws NoUserInputException {
-        OutputUtil.printSuccessfulMessage(">");
+        OutputUtil.printSuccessfulMessageOneStrip("> ");
         String[] splitString = scanner.nextLine().replaceAll("\s{2,}", " ").strip().split(" ");
         String commandName = splitString[0];
         CommandArgument argument = new CommandArgument(Arrays.copyOfRange(splitString, 1, splitString.length));
