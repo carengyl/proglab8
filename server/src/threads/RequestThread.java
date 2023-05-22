@@ -25,8 +25,12 @@ public class RequestThread extends Thread {
                 Optional<Request> acceptedRequest = socketHandler.getRequest();
                 if (acceptedRequest.isPresent()) {
                     Request request = acceptedRequest.get();
-                    Response responseToSend = invoker.executeClientCommand(request);
-                    socketHandler.sendResponse(responseToSend);
+                    if (request.isRequestCommand()) {
+                        socketHandler.sendResponse(new Response(invoker.getClientAvailableCommand()));
+                    } else {
+                        Response responseToSend = invoker.executeClientCommand(request);
+                        socketHandler.sendResponse(responseToSend);
+                    }
                 }
             } catch (IOException e) {
                 OutputUtil.printErrorMessage("An error occurred while deserializing the request, try again");

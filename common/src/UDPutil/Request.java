@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.LocalTime;
 
 public class Request implements Serializable {
+    private boolean requestCommand = false;
     private String commandName;
     private CommandArgument commandArgument;
     private String clientInfo;
@@ -16,7 +17,9 @@ public class Request implements Serializable {
     /**
      * Constructs dummy-instance to receive DatagramPacket with available commands
      */
-    public Request() {}
+    public Request() {
+        requestCommand = true;
+    }
 
     public Request(String commandName, CommandArgument commandArgument) {
         this.commandName = commandName;
@@ -49,5 +52,9 @@ public class Request implements Serializable {
 
     public String getClientInfo() {
         return clientInfo;
+    }
+
+    public boolean isRequestCommand() {
+        return requestCommand;
     }
 }

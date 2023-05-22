@@ -10,17 +10,32 @@ import exceptions.NoUserInputException;
 import exceptions.ValidationException;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public class Invoker {
     private final HashMap<String, AbstractCommand> SERVER_AVAILABLE_COMMAND = new HashMap<>();
+
+    private final HashMap<String, AbstractCommand> CLIENT_AVAILABLE_COMMAND = new HashMap<>();
 
     public void addServerCommand(AbstractCommand command) {
         this.SERVER_AVAILABLE_COMMAND.put(command.getCommandName(), command);
     }
 
+    public void addClientCommand(AbstractCommand command) {
+        this.CLIENT_AVAILABLE_COMMAND.put(command.getCommandName(), command);
+    }
     public Response executeClientCommand(Request request) {
-        //TO-DO 22.05.2023 execute client command
-        return null;
+        AbstractCommand executableCommand = CLIENT_AVAILABLE_COMMAND.get(request.getCommandName());
+        Optional<Response> optionalResponse = Optional.empty();
+        try {
+            optionalResponse = executableCommand.executeCommand(request.getCommandArgument());
+        } catch (NoUserInputException e) {
+            //Suppress exception, because there will be no input from user
+            e.getSuppressed();
+        }
+        //Suppress warning, because optional will always be present
+        //noinspection OptionalGetWithoutIsPresent
+        return optionalResponse.get();
     }
 
     public void executeServerCommand(String commandName, CommandArgument argument) throws NoUserInputException {
@@ -35,5 +50,9 @@ public class Invoker {
         } else {
             OutputUtil.printErrorMessage("Command " + commandName + " not found. Type \"help\" to see available commands.");
         }
+    }
+
+    public HashMap<String, AbstractCommand> getClientAvailableCommand() {
+        return CLIENT_AVAILABLE_COMMAND;
     }
 }
