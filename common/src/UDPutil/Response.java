@@ -51,6 +51,16 @@ public class Response implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString();
+        StringBuilder collection = new StringBuilder();
+        if (responseCollection != null) {
+            for (long key: responseCollection.keySet()) {
+                collection.append(responseCollection.get(key).toString()).append("\n");
+            }
+            collection = new StringBuilder(collection.substring(0, collection.length() - 1));
+        }
+        return (responseMessage == null ? "" : responseMessage)
+                + (responseHumanBeing == null ? "" : "\n" + responseHumanBeing)
+                + ((responseCollection == null) ? "" : "\n"
+                + collection);
     }
 }

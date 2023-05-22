@@ -46,4 +46,9 @@ public abstract class AbstractCommand implements Serializable {
     public String getCommandName() {
         return commandName;
     }
+
+    public String toString() {
+        return "Command name: " + commandName + ", description: " + commandDescription
+                + ((numberOfArgs == 0) ? "" : ", args: " + argsDescription);
+    }
 }

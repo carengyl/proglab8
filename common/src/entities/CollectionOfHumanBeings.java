@@ -2,7 +2,6 @@ package entities;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import entities.HumanBeing;
 import commonUtil.OutputUtil;
 
 import java.io.Serializable;
@@ -159,5 +158,12 @@ public class CollectionOfHumanBeings implements Serializable {
     public void removeByKey(long key) {
         humanBeings.remove(key);
         OutputUtil.printSuccessfulMessage("Deleted element by key: " + key);
+    }
+
+    @Override
+    public String toString() {
+        return "Collection from file: " + this.getFileName() +
+                "; initialized: " + this.getInitDate() +
+                "; number of elements: " + this.getHumanBeings().size();
     }
 }
