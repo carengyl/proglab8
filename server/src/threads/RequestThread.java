@@ -26,7 +26,7 @@ public class RequestThread extends Thread {
                 if (acceptedRequest.isPresent()) {
                     Request request = acceptedRequest.get();
                     if (request.isRequestCommand()) {
-                        socketHandler.sendResponse(new Response(invoker.getClientAvailableCommand()));
+                        socketHandler.sendResponse(new Response(invoker.getClientSendingCommand()));
                     } else {
                         Response responseToSend = invoker.executeClientCommand(request);
                         socketHandler.sendResponse(responseToSend);

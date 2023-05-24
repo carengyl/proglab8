@@ -9,55 +9,35 @@ import java.io.Serializable;
 import java.util.Optional;
 
 public abstract class AbstractCommand implements Serializable {
-    private boolean needsComplexData;
-    private final String commandName;
-    private final String commandDescription;
-    private final int numberOfArgs;
-    private final String argsDescription;
+    private final CommandData commandData;
 
     public AbstractCommand(String name, String description) {
-        this.commandName = name;
-        this.commandDescription = description;
-        this.numberOfArgs = 0;
-        this.argsDescription = "";
+        this.commandData = new CommandData(name,
+                description,
+                0,
+                "",
+                this::validateArguments);
+
     }
 
     public AbstractCommand(String commandName, String commandDescription, int numberOfArgs, String argsDescription) {
-        this.commandName = commandName;
-        this.commandDescription = commandDescription;
-        this.numberOfArgs = numberOfArgs;
-        this.argsDescription = argsDescription;
+        this.commandData = new CommandData(commandName,
+                commandDescription,
+                numberOfArgs,
+                argsDescription,
+                this::validateArguments);
     }
 
     public abstract Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException;
-    public abstract CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException;
 
-    public int getNumberOfArgs() {
-        return numberOfArgs;
+    public abstract CommandArgument validateArguments(CommandArgument argument, CommandData commandData) throws ValidationException, InvalidNumberOfArgsException;
+
+    public CommandData getCommandData() {
+        return commandData;
     }
 
-    public String getCommandDescription() {
-        return commandDescription;
-    }
-
-    public String getArgsDescription() {
-        return argsDescription;
-    }
-
-    public String getCommandName() {
-        return commandName;
-    }
-
+    @Override
     public String toString() {
-        return "Command name: " + commandName + ", description: " + commandDescription
-                + ((numberOfArgs == 0) ? "" : ", args: " + argsDescription);
-    }
-
-    public boolean isNeedsComplexData() {
-        return needsComplexData;
-    }
-
-    public void setNeedsComplexData(boolean needsComplexData) {
-        this.needsComplexData = needsComplexData;
+        return commandData.toString();
     }
 }

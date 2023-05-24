@@ -125,11 +125,15 @@ public final class Validators {
                                     String wrongCaseMessage,
                                     Function<String, T> function,
                                     String arg) throws ValidationException, IllegalArgumentException {
-        T value = function.apply(arg);
-        if (predicate.test(value)) {
-            return value;
-        } else {
-            throw new ValidationException(wrongCaseMessage);
+        try {
+            T value = function.apply(arg);
+            if (predicate.test(value)) {
+                return value;
+            } else {
+                throw new ValidationException(wrongCaseMessage);
+            }
+        } catch (Exception e) {
+            throw new ValidationException(e.getMessage());
         }
     }
 }

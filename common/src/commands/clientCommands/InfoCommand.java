@@ -1,8 +1,9 @@
-package commands.client;
+package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commands.CommandData;
 import commonUtil.Validators;
 import entities.CollectionOfHumanBeings;
 import exceptions.InvalidNumberOfArgsException;
@@ -27,8 +28,8 @@ public class InfoCommand extends AbstractCommand implements Serializable {
     }
 
     @Override
-    public CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException {
-        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
+    public CommandArgument validateArguments(CommandArgument arguments, CommandData commandData) throws ValidationException, InvalidNumberOfArgsException {
+        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), commandData.numberOfArgs());
         return arguments;
     }
 }

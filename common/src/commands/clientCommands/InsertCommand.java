@@ -1,8 +1,9 @@
-package commands.client;
+package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commands.CommandData;
 import commonUtil.Validators;
 import entities.CollectionOfHumanBeings;
 import exceptions.InvalidNumberOfArgsException;
@@ -18,21 +19,24 @@ public class InsertCommand extends AbstractCommand implements Serializable {
     public InsertCommand(CollectionOfHumanBeings collection) {
         super("insert", "Add element to collection by @key", 1, "@key - unique long of element");
         this.collection = collection;
-        this.setNeedsComplexData(true);
     }
 
     @Override
     public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
         long key = argument.getLongArg();
-        collection.addByKey(key, argument.getHumanBeingArgument());
-        return Optional.of(new Response("Added Human Being by key: " + key,
-                argument.getHumanBeingArgument()));
+        if (!collection.getHumanBeings().containsKey(key)) {
+            collection.addByKey(key, argument.getHumanBeingArgument());
+            return Optional.of(new Response("Added Human Being by key: " + key,
+                    argument.getHumanBeingArgument()));
+        } else {
+            return Optional.of(new Response("Key isn't unique"));
+        }
     }
 
     @Override
-    public CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException {
-        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
-        long key = Validators.validateArg(arg -> (!collection.getHumanBeings().containsKey((long) arg)),
+    public CommandArgument validateArguments(CommandArgument arguments, CommandData commandData) throws ValidationException, InvalidNumberOfArgsException {
+        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), commandData.numberOfArgs());
+        long key = Validators.validateArg(arg -> true,
                 "Key isn't unique",
                 Long::parseLong,
                 arguments.getArg());

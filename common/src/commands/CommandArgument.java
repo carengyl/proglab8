@@ -3,9 +3,11 @@ package commands;
 import entities.HumanBeing;
 
 import java.io.Serializable;
+import java.nio.file.Path;
 
 public class CommandArgument implements Serializable {
     private final int numberOfArgs;
+    private Path fileNameArg;
     private int currentArgNumber;
     private String arg;
     private String[] args;
@@ -76,5 +78,13 @@ public class CommandArgument implements Serializable {
 
     public void setHumanBeingArgument(HumanBeing humanBeingArgument) {
         this.humanBeingArgument = humanBeingArgument;
+    }
+
+    public Path getFileNameArg() {
+        return fileNameArg;
+    }
+
+    public void setFileNameArg(Path fileNameArg) {
+        this.fileNameArg = fileNameArg;
     }
 }

@@ -1,8 +1,9 @@
-package commands.client;
+package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commands.CommandData;
 import commonUtil.Validators;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
@@ -45,8 +46,8 @@ public class FilterByCarCommand extends AbstractCommand implements Serializable 
     }
 
     @Override
-    public CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException {
-        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
+    public CommandArgument validateArguments(CommandArgument arguments, CommandData commandData) throws ValidationException, InvalidNumberOfArgsException {
+        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), commandData.numberOfArgs());
         Boolean car = Validators.validateArg(arg -> true,
                 "should be true or false",
                 Boolean::parseBoolean,

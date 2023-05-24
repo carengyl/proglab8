@@ -1,8 +1,9 @@
-package commands.client;
+package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commands.CommandData;
 import commonUtil.Validators;
 import entities.Mood;
 import exceptions.InvalidNumberOfArgsException;
@@ -39,8 +40,8 @@ public class CountLessThanMinutesOfWaitingCommand extends AbstractCommand implem
     }
 
     @Override
-    public CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException {
-        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
+    public CommandArgument validateArguments(CommandArgument arguments, CommandData commandData) throws ValidationException, InvalidNumberOfArgsException {
+        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), commandData.numberOfArgs());
         double minutesOfWaiting = Validators.validateArg(arg -> true,
                 "Pick a Mood number:\n" + Mood.show(),
                 Double::parseDouble,

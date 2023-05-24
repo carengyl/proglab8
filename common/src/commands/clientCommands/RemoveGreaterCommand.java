@@ -1,8 +1,9 @@
-package commands.client;
+package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commands.CommandData;
 import commonUtil.Validators;
 import entities.CollectionOfHumanBeings;
 import exceptions.InvalidNumberOfArgsException;
@@ -18,7 +19,6 @@ public class RemoveGreaterCommand extends AbstractCommand implements Serializabl
     public RemoveGreaterCommand(CollectionOfHumanBeings collection) {
         super("remove_greater", "Remove all elements, which are greater than {element}");
         this.collection = collection;
-        this.setNeedsComplexData(true);
     }
 
     @Override
@@ -33,8 +33,8 @@ public class RemoveGreaterCommand extends AbstractCommand implements Serializabl
     }
 
     @Override
-    public CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException {
-        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
+    public CommandArgument validateArguments(CommandArgument arguments, CommandData commandData) throws ValidationException, InvalidNumberOfArgsException {
+        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), commandData.numberOfArgs());
         return arguments;
     }
 }

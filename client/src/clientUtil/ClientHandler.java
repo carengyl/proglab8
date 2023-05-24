@@ -2,14 +2,14 @@ package clientUtil;
 
 import UDPutil.Request;
 import UDPutil.Response;
-import localCommands.ExitCommand;
-import localCommands.HelpCommand;
 import commandLine.CommandReader;
-import commands.AbstractCommand;
+import commands.CommandData;
 import commonUtil.HumanBeingFactory;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
 import exceptions.NoUserInputException;
+import localCommands.ExitCommand;
+import localCommands.HelpCommand;
 
 import java.io.IOException;
 import java.net.SocketException;
@@ -38,6 +38,7 @@ public class ClientHandler {
             this.initClientCommands();
         } catch (IOException | ClassNotFoundException e) {
             OutputUtil.printErrorMessage("Unable to access available commands from server. Forced shut down...");
+            e.printStackTrace();
             this.toggleStatus();
         }
 
@@ -156,7 +157,7 @@ public class ClientHandler {
         }
     }
 
-    private HashMap<String, AbstractCommand> getCommandsFromServer() throws IOException, ClassNotFoundException {
+    private HashMap<String, CommandData> getCommandsFromServer() throws IOException, ClassNotFoundException {
         clientSocketHandler.sendRequest(new Request());
         return clientSocketHandler.receiveResponse().getAvailableCommands();
     }

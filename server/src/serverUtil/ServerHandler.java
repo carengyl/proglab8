@@ -1,6 +1,6 @@
 package serverUtil;
 
-import commands.client.*;
+import commands.clientCommands.*;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
 import entities.CollectionOfHumanBeings;

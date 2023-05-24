@@ -1,8 +1,9 @@
-package commands.client;
+package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commands.CommandData;
 import commonUtil.Validators;
 import exceptions.InvalidNumberOfArgsException;
 import entities.CollectionOfHumanBeings;
@@ -31,8 +32,8 @@ public class ClearCommand extends AbstractCommand implements Serializable {
     }
 
     @Override
-    public CommandArgument validateArguments(CommandArgument arguments) throws InvalidNumberOfArgsException {
-        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
+    public CommandArgument validateArguments(CommandArgument arguments, CommandData commandData) throws InvalidNumberOfArgsException {
+        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), commandData.numberOfArgs());
         return arguments;
     }
 }

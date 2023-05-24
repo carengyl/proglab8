@@ -3,6 +3,7 @@ package commandLine;
 import clientUtil.CommandToSend;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commands.CommandData;
 import commonUtil.HumanBeingFactory;
 import commonUtil.OutputUtil;
 import entities.HumanBeing;
@@ -19,16 +20,17 @@ import java.util.Scanner;
  * Class, responsible for reading commands from console and executing them
  */
 public class CommandReader {
-    private final HashMap<String, AbstractCommand> availableServerCommands;
+
+    private final HashMap<String, CommandData> availableServerCommands;
     private final HashMap<String, AbstractCommand> availableClientCommands;
 
-    public CommandReader(HashMap<String, AbstractCommand> commandsFromServer) {
+    public CommandReader(HashMap<String, CommandData> commandsFromServer) {
         this.availableServerCommands = commandsFromServer;
         this.availableClientCommands = new HashMap<>();
     }
 
     public void addClientCommand(AbstractCommand command) {
-        this.availableClientCommands.put(command.getCommandName(), command);
+        this.availableClientCommands.put(command.getCommandData().commandName(), command);
     }
 
     public Optional<CommandToSend> readCommandsFromConsole(Scanner scanner) throws NoUserInputException {
@@ -40,7 +42,7 @@ public class CommandReader {
         if (availableClientCommands.containsKey(commandName)) {
             try {
                 AbstractCommand executableCommand = availableClientCommands.get(commandName);
-                CommandArgument validatedArgs = executableCommand.validateArguments(argument);
+                CommandArgument validatedArgs = executableCommand.validateArguments(argument, executableCommand.getCommandData());
                 executableCommand.executeCommand(validatedArgs);
                 return Optional.empty();
             } catch (ValidationException | InvalidNumberOfArgsException e) {
@@ -48,21 +50,16 @@ public class CommandReader {
             }
         } else if (availableServerCommands.containsKey(commandName)) {
             try {
-                AbstractCommand command = availableServerCommands.get(commandName);
-                CommandArgument validatedArg = command.validateArguments(argument);
-                if (command.isNeedsComplexData()) {
-                    HumanBeingFactory humanBeingFactory = new HumanBeingFactory();
-                    humanBeingFactory.setVariables();
-                    HumanBeing humanBeing = humanBeingFactory.getCreatedHumanBeing();
-                    validatedArg.setHumanBeingArgument(humanBeing);
-                }
+                CommandData executableCommandData = availableServerCommands.get(commandName);
+                CommandArgument validatedArg = executableCommandData.validationFunction().apply(argument, executableCommandData);
                 CommandToSend commandToSend = new CommandToSend(commandName, validatedArg);
                 return Optional.of(commandToSend);
             } catch (ValidationException | InvalidNumberOfArgsException e) {
                 OutputUtil.printErrorMessage(e.getMessage());
             }
+        } else {
+            OutputUtil.printErrorMessage("Command " + commandName + " not found. Type \"help\" to see available commands.");
         }
-        OutputUtil.printErrorMessage("Command " + commandName + " not found. Type \"help\" to see available commands.");
         return Optional.empty();
     }
 
@@ -70,7 +67,7 @@ public class CommandReader {
         return availableClientCommands;
     }
 
-    public HashMap<String, AbstractCommand> getAvailableServerCommands() {
+    public HashMap<String, CommandData> getAvailableServerCommands() {
         return availableServerCommands;
     }
 }

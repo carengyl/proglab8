@@ -4,6 +4,7 @@ import UDPutil.Response;
 import clientUtil.ClientHandler;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commands.CommandData;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
 import exceptions.InvalidNumberOfArgsException;
@@ -31,8 +32,8 @@ public class ExitCommand extends AbstractCommand {
     }
 
     @Override
-    public CommandArgument validateArguments(CommandArgument arguments) throws InvalidNumberOfArgsException {
-        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
+    public CommandArgument validateArguments(CommandArgument arguments, CommandData commandData) throws InvalidNumberOfArgsException {
+        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), commandData.numberOfArgs());
         return arguments;
     }
 }

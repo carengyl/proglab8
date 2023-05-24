@@ -1,8 +1,9 @@
-package commands.client;
+package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commands.CommandData;
 import commonUtil.Validators;
 import entities.CollectionOfHumanBeings;
 import exceptions.InvalidNumberOfArgsException;
@@ -23,13 +24,18 @@ public class RemoveKeyCommand extends AbstractCommand implements Serializable {
 
     @Override
     public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        return Optional.of(new Response(collection.removeByKey(argument.getLongArg())));
+        long key = argument.getLongArg();
+        if (collection.getHumanBeings().containsKey(key)) {
+            return Optional.of(new Response(collection.removeByKey(key)));
+        } else {
+            return Optional.of(new Response("Key not found"));
+        }
     }
 
     @Override
-    public CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException {
-        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
-        long key = Validators.validateArg(arg -> (collection.getHumanBeings().containsKey((long) arg)),
+    public CommandArgument validateArguments(CommandArgument arguments, CommandData commandData) throws ValidationException, InvalidNumberOfArgsException {
+        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), commandData.numberOfArgs());
+        long key = Validators.validateArg(arg -> true,
                 "Key not found",
                 Long::parseLong,
                 arguments.getArg());

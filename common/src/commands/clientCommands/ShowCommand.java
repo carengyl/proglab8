@@ -1,8 +1,9 @@
-package commands.client;
+package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commands.CommandData;
 import commonUtil.Validators;
 import entities.CollectionOfHumanBeings;
 import exceptions.InvalidNumberOfArgsException;
@@ -23,7 +24,6 @@ public class ShowCommand extends AbstractCommand implements Serializable {
     public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Collection from file: ").append(collection.getFileName()).append("\n");
-        Optional<Response> optionalResponse;
         if (!collection.getHumanBeings().isEmpty()) {
             for (long key : collection.getHumanBeings().keySet()) {
                 stringBuilder.append("Key: ").append(key).append("; ").append(collection.getHumanBeings().get(key).toString()).append("\n");
@@ -35,8 +35,8 @@ public class ShowCommand extends AbstractCommand implements Serializable {
     }
 
     @Override
-    public CommandArgument validateArguments(CommandArgument arguments) throws ValidationException, InvalidNumberOfArgsException {
-        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
+    public CommandArgument validateArguments(CommandArgument arguments, CommandData commandData) throws ValidationException, InvalidNumberOfArgsException {
+        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), commandData.numberOfArgs());
         return arguments;
     }
 }

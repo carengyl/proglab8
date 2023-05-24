@@ -3,6 +3,7 @@ package localCommands;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
+import commands.CommandData;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
 import exceptions.InvalidNumberOfArgsException;
@@ -13,9 +14,9 @@ import java.util.Optional;
 public class HelpCommand extends AbstractCommand {
 
     private final HashMap<String, AbstractCommand> clientCommands;
-    private final HashMap<String, AbstractCommand> serverCommands;
+    private final HashMap<String, CommandData> serverCommands;
 
-    public HelpCommand(HashMap<String, AbstractCommand> clientCommands, HashMap<String, AbstractCommand> serverCommands) {
+    public HelpCommand(HashMap<String, AbstractCommand> clientCommands, HashMap<String, CommandData> serverCommands) {
         super("help", "Show all available commands");
         this.clientCommands = clientCommands;
         this.serverCommands = serverCommands;
@@ -36,8 +37,8 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public CommandArgument validateArguments(CommandArgument arguments) throws InvalidNumberOfArgsException {
-        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), this.getNumberOfArgs());
+    public CommandArgument validateArguments(CommandArgument arguments, CommandData commandData) throws InvalidNumberOfArgsException {
+        Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), commandData.numberOfArgs());
         return arguments;
     }
 }
