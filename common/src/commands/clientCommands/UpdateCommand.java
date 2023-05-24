@@ -25,8 +25,12 @@ public class UpdateCommand extends AbstractCommand implements Serializable {
     public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
         long id = argument.getLongArg();
         if (collection.checkForId(id)) {
-            collection.updateById(id, argument.getHumanBeingArgument());
-            return Optional.of(new Response("Updated human being by id: " + argument.getLongArg()));
+            if (argument.getHumanBeingArgument() != null) {
+                collection.updateById(id, argument.getHumanBeingArgument());
+                return Optional.of(new Response("Updated human being by id: " + argument.getLongArg()));
+            } else {
+                return Optional.of(new Response(this.getCommandData(), argument));
+            }
         } else {
             return Optional.of(new Response("There is no Human Being with id: " + id));
         }

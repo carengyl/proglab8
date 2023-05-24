@@ -23,15 +23,19 @@ public class RemoveGreaterCommand extends AbstractCommand implements Serializabl
 
     @Override
     public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (long key: collection.getHumanBeings().keySet()) {
-            if (collection.getHumanBeings().get(key).compareTo(argument.getHumanBeingArgument()) > 0) {
-                stringBuilder.append(collection.removeByKey(key)).append("\n");
+        if (argument.getHumanBeingArgument() != null) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (long key : collection.getHumanBeings().keySet()) {
+                if (collection.getHumanBeings().get(key).compareTo(argument.getHumanBeingArgument()) > 0) {
+                    stringBuilder.append(collection.removeByKey(key)).append("\n");
+                }
             }
+            return Optional.of(new Response(stringBuilder.toString()));
         }
-        return Optional.of(new Response(stringBuilder.toString()));
+        else {
+            return Optional.of(new Response(this.getCommandData(), argument));
+        }
     }
-
     @Override
     public CommandArgument validateArguments(CommandArgument arguments, CommandData commandData) throws ValidationException, InvalidNumberOfArgsException {
         Validators.validateNumberOfArgs(arguments.getNumberOfArgs(), commandData.numberOfArgs());

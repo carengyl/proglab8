@@ -1,6 +1,6 @@
 package UDPutil;
 
-import commands.AbstractCommand;
+import commands.CommandArgument;
 import commands.CommandData;
 import entities.HumanBeing;
 
@@ -8,12 +8,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public class Response implements Serializable {
-    private AbstractCommand command;
+    private CommandData command;
     private String responseMessage;
     private HashMap<Long, HumanBeing> responseCollection;
     private HumanBeing responseHumanBeing;
     private HashMap<String, CommandData> availableCommands;
     private boolean requestHumanBeing = false;
+    private CommandArgument commandArgument;
 
     public Response(HashMap<String, CommandData> availableCommands) {
         this.availableCommands = availableCommands;
@@ -28,21 +29,10 @@ public class Response implements Serializable {
         this.responseHumanBeing = humanBeing;
     }
 
-    public Response(AbstractCommand command) {
+    public Response(CommandData command, CommandArgument commandArgument) {
         requestHumanBeing = true;
         this.command = command;
-    }
-
-    public HumanBeing getResponseHumanBeing() {
-        return responseHumanBeing;
-    }
-
-    public String getResponseMessage() {
-        return responseMessage;
-    }
-
-    public HashMap<Long, HumanBeing> getResponseCollection() {
-        return responseCollection;
+        this.commandArgument = commandArgument;
     }
 
     public HashMap<String, CommandData> getAvailableCommands() {
@@ -53,12 +43,12 @@ public class Response implements Serializable {
         return requestHumanBeing;
     }
 
-    public void setRequestHumanBeing() {
-        this.requestHumanBeing = true;
+    public CommandData getCommandData() {
+        return command;
     }
 
-    public AbstractCommand getCommand() {
-        return command;
+    public CommandArgument getCommandArgument() {
+        return commandArgument;
     }
 
     @Override

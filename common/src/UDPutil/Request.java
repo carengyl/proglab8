@@ -11,7 +11,6 @@ public class Request implements Serializable {
     private String commandName;
     private CommandArgument commandArgument;
     private String clientInfo;
-    private HumanBeing humanBeing;
     private LocalTime sendTime;
 
     /**
@@ -24,10 +23,6 @@ public class Request implements Serializable {
     public Request(String commandName, CommandArgument commandArgument) {
         this.commandName = commandName;
         this.commandArgument = commandArgument;
-    }
-
-    public Request(HumanBeing humanBeing) {
-        this.humanBeing = humanBeing;
     }
 
     public void setSendTime(LocalTime sendTime) {
@@ -44,10 +39,6 @@ public class Request implements Serializable {
 
     public CommandArgument getCommandArgument() {
         return commandArgument;
-    }
-
-    public HumanBeing getHumanBeing() {
-        return humanBeing;
     }
 
     public String getClientInfo() {

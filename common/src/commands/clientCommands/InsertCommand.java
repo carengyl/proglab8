@@ -25,9 +25,13 @@ public class InsertCommand extends AbstractCommand implements Serializable {
     public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
         long key = argument.getLongArg();
         if (!collection.getHumanBeings().containsKey(key)) {
-            collection.addByKey(key, argument.getHumanBeingArgument());
-            return Optional.of(new Response("Added Human Being by key: " + key,
-                    argument.getHumanBeingArgument()));
+            if (argument.getHumanBeingArgument() != null) {
+                collection.addByKey(key, argument.getHumanBeingArgument());
+                return Optional.of(new Response("Added Human Being by key: " + key,
+                        argument.getHumanBeingArgument()));
+            } else {
+                return Optional.of(new Response(this.getCommandData(), argument));
+            }
         } else {
             return Optional.of(new Response("Key isn't unique"));
         }

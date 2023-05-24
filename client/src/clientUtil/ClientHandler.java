@@ -3,6 +3,7 @@ package clientUtil;
 import UDPutil.Request;
 import UDPutil.Response;
 import commandLine.CommandReader;
+import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.HumanBeingFactory;
 import commonUtil.OutputUtil;
@@ -68,10 +69,11 @@ public class ClientHandler {
         return sendRequest(request);
     }
 
-    private boolean sendHumanBeingRequest() throws NoUserInputException {
+    private boolean sendHumanBeingRequest(CommandData commandData, CommandArgument commandArgument) throws NoUserInputException {
         HumanBeingFactory humanBeingFactory = new HumanBeingFactory();
         humanBeingFactory.setVariables();
-        Request request = new Request(humanBeingFactory.getCreatedHumanBeing());
+        commandArgument.setHumanBeingArgument(humanBeingFactory.getCreatedHumanBeing());
+        Request request = new Request(commandData.commandName(), commandArgument);
         return sendRequest(request);
     }
 
@@ -92,7 +94,7 @@ public class ClientHandler {
         try {
             Response response = clientSocketHandler.receiveResponse();
             if (response.hasRequestHumanBeing()) {
-                if (sendHumanBeingRequest()) {
+                if (sendHumanBeingRequest(response.getCommandData(), response.getCommandArgument())) {
                     receiveResponse();
                 }
             }
