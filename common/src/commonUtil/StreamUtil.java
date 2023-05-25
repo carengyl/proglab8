@@ -1,4 +1,4 @@
-package clientUtil;
+package commonUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;

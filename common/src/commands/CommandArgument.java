@@ -15,6 +15,7 @@ public class CommandArgument implements Serializable {
     private double doubleArg;
     private long longArg;
     private boolean booleanArg;
+    private Path fileName;
     private HumanBeing humanBeingArgument;
     public CommandArgument(String[] args) {
         this.numberOfArgs = args.length;
@@ -86,5 +87,13 @@ public class CommandArgument implements Serializable {
 
     public void setFileNameArg(Path fileNameArg) {
         this.fileNameArg = fileNameArg;
+    }
+
+    public Path getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(Path fileName) {
+        this.fileName = fileName;
     }
 }

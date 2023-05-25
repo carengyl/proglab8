@@ -4,6 +4,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.security.AnyTypePermission;
 import commonUtil.OutputUtil;
+import commonUtil.StreamUtil;
 import entities.Car;
 import entities.CollectionOfHumanBeings;
 import entities.Coordinates;

@@ -16,13 +16,13 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.nio.file.Path;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class ClientHandler {
+    private static final Set<Path> scriptHistory = new HashSet<>();
+    private final ScriptReader scriptReader = new ScriptReader();
     private final Scanner scanner = new Scanner(System.in);
     private CommandReader commandReader;
     private ClientSocketHandler clientSocketHandler;
@@ -34,14 +34,8 @@ public class ClientHandler {
     public void start() {
         this.inputAddress();
         this.inputPort();
-        try {
-            commandReader = new CommandReader(getCommandsFromServer());
-            this.initClientCommands();
-        } catch (IOException | ClassNotFoundException e) {
-            OutputUtil.printErrorMessage("Unable to access available commands from server. Forced shut down...");
-            e.printStackTrace();
-            this.toggleStatus();
-        }
+        commandReader = new CommandReader(getCommandsFromServer());
+        this.initClientCommands();
 
         while (working) {
             try {
@@ -93,6 +87,10 @@ public class ClientHandler {
     private void receiveResponse() throws NoUserInputException {
         try {
             Response response = clientSocketHandler.receiveResponse();
+            if (response.isRequestScriptCommands()) {
+                Path scriptFileName = response.getCommandArgument().getFileName();
+                readCommandsFromScript(scriptFileName);
+            }
             if (response.hasRequestHumanBeing()) {
                 if (sendHumanBeingRequest(response.getCommandData(), response.getCommandArgument())) {
                     receiveResponse();
@@ -106,6 +104,18 @@ public class ClientHandler {
             ioException.printStackTrace();
         } catch (ClassNotFoundException classNotFoundException) {
             OutputUtil.printErrorMessage("The response came damaged");
+        }
+    }
+
+    private void readCommandsFromScript(Path scriptFileName) throws IOException {
+        scriptHistory.add(scriptFileName);
+        if (scriptHistory.contains(scriptFileName)) {
+            OutputUtil.printErrorMessage("Loop possible");
+        }
+        else {
+            scriptHistory.add(scriptFileName);
+            scriptReader.readCommandsFromFile(scriptFileName);
+
         }
     }
 
@@ -159,8 +169,23 @@ public class ClientHandler {
         }
     }
 
-    private HashMap<String, CommandData> getCommandsFromServer() throws IOException, ClassNotFoundException {
-        clientSocketHandler.sendRequest(new Request());
-        return clientSocketHandler.receiveResponse().getAvailableCommands();
+    private HashMap<String, CommandData> getCommandsFromServer() {
+        try {
+            clientSocketHandler.sendRequest(new Request());
+            return clientSocketHandler.receiveResponse().getAvailableCommands();
+        } catch (IOException | ClassNotFoundException e) {
+            OutputUtil.printErrorMessage("Unable to get commands from server.");
+            try {
+                if (Validators.validateBooleanInput("Wait", scanner)) {
+                    getCommandsFromServer();
+                } else {
+                    OutputUtil.printSuccessfulMessage("Shutting down...");
+                    this.toggleStatus();
+                }
+            } catch (NoUserInputException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        return null;
     }
 }

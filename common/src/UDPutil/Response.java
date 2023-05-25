@@ -14,6 +14,7 @@ public class Response implements Serializable {
     private HumanBeing responseHumanBeing;
     private HashMap<String, CommandData> availableCommands;
     private boolean requestHumanBeing = false;
+    private boolean requestScriptCommands = false;
     private CommandArgument commandArgument;
 
     public Response(HashMap<String, CommandData> availableCommands) {
@@ -30,9 +31,14 @@ public class Response implements Serializable {
     }
 
     public Response(CommandData command, CommandArgument commandArgument) {
-        requestHumanBeing = true;
+        this.requestHumanBeing = true;
         this.command = command;
         this.commandArgument = commandArgument;
+    }
+
+    public Response(CommandArgument commandArgument) {
+        this.commandArgument = commandArgument;
+        this.requestScriptCommands = true;
     }
 
     public HashMap<String, CommandData> getAvailableCommands() {
@@ -64,5 +70,13 @@ public class Response implements Serializable {
                 + (responseHumanBeing == null ? "" : "\n" + responseHumanBeing)
                 + ((responseCollection == null) ? "" : "\n"
                 + collection);
+    }
+
+    public void setResponseCollection(HashMap<Long, HumanBeing> responseCollection) {
+        this.responseCollection = responseCollection;
+    }
+
+    public boolean isRequestScriptCommands() {
+        return requestScriptCommands;
     }
 }
