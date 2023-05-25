@@ -10,7 +10,6 @@ import exceptions.NoUserInputException;
 import exceptions.ValidationException;
 
 import java.io.Serializable;
-import java.nio.file.Path;
 import java.util.Optional;
 
 public class ExecuteScriptCommand extends AbstractCommand implements Serializable {
@@ -27,11 +26,7 @@ public class ExecuteScriptCommand extends AbstractCommand implements Serializabl
     @Override
     public CommandArgument validateArguments(CommandArgument argument, CommandData commandData) throws ValidationException, InvalidNumberOfArgsException {
         Validators.validateNumberOfArgs(argument.getNumberOfArgs(), commandData.numberOfArgs());
-        Path fileName = Validators.validateArg(arg -> true,
-                "Enter a path to file",
-                Path::of,
-                argument.getArg());
-        argument.setFileName(fileName);
+        argument.setFileName(argument.getArg());
         return argument;
     }
 }

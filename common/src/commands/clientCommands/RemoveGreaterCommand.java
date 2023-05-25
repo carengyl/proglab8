@@ -4,6 +4,7 @@ import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
 import commands.CommandData;
+import commonUtil.HumanBeingFactory;
 import commonUtil.Validators;
 import entities.CollectionOfHumanBeings;
 import exceptions.InvalidNumberOfArgsException;
@@ -32,7 +33,21 @@ public class RemoveGreaterCommand extends AbstractCommand implements Serializabl
             }
             return Optional.of(new Response(stringBuilder.toString()));
         }
-        else {
+        else if (argument.getElementArgument() != null) {
+          try {
+              HumanBeingFactory humanBeingFactory = new HumanBeingFactory();
+              humanBeingFactory.setVariables(argument.getElementArgument());
+              StringBuilder stringBuilder = new StringBuilder();
+              for (long key : collection.getHumanBeings().keySet()) {
+                  if (collection.getHumanBeings().get(key).compareTo(humanBeingFactory.getCreatedHumanBeing()) > 0) {
+                      stringBuilder.append(collection.removeByKey(key)).append("\n");
+                  }
+              }
+              return Optional.of(new Response(stringBuilder.toString()));
+          } catch (ValidationException e) {
+              return Optional.of(new Response(e.getMessage()));
+          }
+        } else {
             return Optional.of(new Response(this.getCommandData(), argument));
         }
     }

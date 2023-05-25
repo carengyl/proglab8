@@ -1,10 +1,10 @@
 package clientUtil;
 
 import commonUtil.StreamUtil;
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 /**
@@ -23,8 +23,8 @@ public class ScriptReader {
      * @param fileName String filename
      * @throws IOException if no access or file not found
      */
-    public void readCommandsFromFile(Path fileName) throws IOException{
-        try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(fileName.toFile()))) {
+    public void readCommandsFromFile(String fileName) throws IOException{
+        try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(fileName))) {
             final StreamUtil streamUtil = new StreamUtil();
             commandsFromScript = streamUtil.streamToArrayOfCommands(input);
         }

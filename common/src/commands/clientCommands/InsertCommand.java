@@ -4,6 +4,7 @@ import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
 import commands.CommandData;
+import commonUtil.HumanBeingFactory;
 import commonUtil.Validators;
 import entities.CollectionOfHumanBeings;
 import exceptions.InvalidNumberOfArgsException;
@@ -29,6 +30,15 @@ public class InsertCommand extends AbstractCommand implements Serializable {
                 collection.addByKey(key, argument.getHumanBeingArgument());
                 return Optional.of(new Response("Added Human Being by key: " + key,
                         argument.getHumanBeingArgument()));
+            } else if (argument.getElementArgument() != null) {
+                HumanBeingFactory humanBeingFactory = new HumanBeingFactory();
+                try {
+                    humanBeingFactory.setVariables(argument.getElementArgument());
+                    collection.addByKey(key, humanBeingFactory.getCreatedHumanBeing());
+                    return Optional.of(new Response("Added Human Being by key: " + key, humanBeingFactory.getCreatedHumanBeing()));
+                } catch (ValidationException e) {
+                    return Optional.of(new Response(e.getMessage()));
+                }
             } else {
                 return Optional.of(new Response(this.getCommandData(), argument));
             }

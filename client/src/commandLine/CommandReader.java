@@ -4,17 +4,12 @@ import clientUtil.CommandToSend;
 import commands.AbstractCommand;
 import commands.CommandArgument;
 import commands.CommandData;
-import commonUtil.HumanBeingFactory;
 import commonUtil.OutputUtil;
-import entities.HumanBeing;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Class, responsible for reading commands from console and executing them
@@ -33,6 +28,30 @@ public class CommandReader {
         this.availableClientCommands.put(command.getCommandData().commandName(), command);
     }
 
+    public Optional<CommandToSend> readCommandsFromScript(String string, ArrayList<String> elementArg) {
+        String[] splitString = string.replaceAll("\s{2,}", " ").strip().split(" ");
+        String commandName = splitString[0];
+        CommandArgument argument = new CommandArgument(Arrays.copyOfRange(splitString, 1, splitString.length));
+        argument.setElementArgument(elementArg);
+        if (availableServerCommands.containsKey(commandName)) {
+            Optional<CommandToSend> commandToSend = getCommandToSend(commandName, argument);
+            if (commandToSend.isPresent()) return commandToSend;
+        }
+        return Optional.empty();
+    }
+
+    private Optional<CommandToSend> getCommandToSend(String commandName, CommandArgument argument) {
+        try {
+            CommandData executableCommandData = availableServerCommands.get(commandName);
+            CommandArgument validatedArg = executableCommandData.validationFunction().apply(argument, executableCommandData);
+            CommandToSend commandToSend = new CommandToSend(commandName, validatedArg);
+            return Optional.of(commandToSend);
+        } catch (ValidationException | InvalidNumberOfArgsException e) {
+            OutputUtil.printErrorMessage(e.getMessage());
+        }
+        return Optional.empty();
+    }
+
     public Optional<CommandToSend> readCommandsFromConsole(Scanner scanner) throws NoUserInputException {
         OutputUtil.printSuccessfulMessageOneStrip("> ");
         String[] splitString = scanner.nextLine().replaceAll("\s{2,}", " ").strip().split(" ");
@@ -49,14 +68,8 @@ public class CommandReader {
                 OutputUtil.printErrorMessage(e.getMessage());
             }
         } else if (availableServerCommands.containsKey(commandName)) {
-            try {
-                CommandData executableCommandData = availableServerCommands.get(commandName);
-                CommandArgument validatedArg = executableCommandData.validationFunction().apply(argument, executableCommandData);
-                CommandToSend commandToSend = new CommandToSend(commandName, validatedArg);
-                return Optional.of(commandToSend);
-            } catch (ValidationException | InvalidNumberOfArgsException e) {
-                OutputUtil.printErrorMessage(e.getMessage());
-            }
+            Optional<CommandToSend> commandToSend = getCommandToSend(commandName, argument);
+            if (commandToSend.isPresent()) return commandToSend;
         } else {
             OutputUtil.printErrorMessage("Command " + commandName + " not found. Type \"help\" to see available commands.");
         }

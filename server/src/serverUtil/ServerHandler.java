@@ -8,6 +8,8 @@ import exceptions.NoUserInputException;
 import serverCommandLine.Invoker;
 import serverCommandLine.ServerCommandReader;
 import serverCommands.ServerExitCommand;
+import serverCommands.ServerHelpCommand;
+import serverCommands.ServerSaveCommand;
 import threads.ConsoleThread;
 import threads.RequestThread;
 
@@ -42,15 +44,20 @@ public class ServerHandler {
         invoker.addClientCommand(new CountGreaterThanMoodCommand(collection));
         invoker.addClientCommand(new CountLessThanMinutesOfWaitingCommand(collection));
         invoker.addClientCommand(new FilterByCarCommand(collection));
+
         invoker.addClientCommand(new InfoCommand(collection));
         invoker.addClientCommand(new InsertCommand(collection));
         invoker.addClientCommand(new RemoveGreaterCommand(collection));
         invoker.addClientCommand(new RemoveKeyCommand(collection));
+
         invoker.addClientCommand(new RemoveLowerKeyCommand(collection));
         invoker.addClientCommand(new ShowCommand(collection));
         invoker.addClientCommand(new UpdateCommand(collection));
+        invoker.addClientCommand(new ExecuteScriptCommand());
 
         invoker.addServerCommand(new ServerExitCommand());
+        invoker.addServerCommand(new ServerSaveCommand(collection));
+        invoker.addServerCommand(new ServerHelpCommand(invoker.getSERVER_AVAILABLE_COMMAND()));
     }
 
     public static boolean isRunning() {

@@ -8,6 +8,7 @@ import commands.CommandData;
 import commonUtil.HumanBeingFactory;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
+import entities.HumanBeing;
 import exceptions.NoUserInputException;
 import localCommands.ExitCommand;
 import localCommands.HelpCommand;
@@ -88,15 +89,17 @@ public class ClientHandler {
         try {
             Response response = clientSocketHandler.receiveResponse();
             if (response.isRequestScriptCommands()) {
-                Path scriptFileName = response.getCommandArgument().getFileName();
+                String scriptFileName = String.valueOf(response.getCommandArgument().getFileName());
                 readCommandsFromScript(scriptFileName);
             }
-            if (response.hasRequestHumanBeing()) {
-                if (sendHumanBeingRequest(response.getCommandData(), response.getCommandArgument())) {
-                    receiveResponse();
+            else {
+                if (response.hasRequestHumanBeing()) {
+                    if (sendHumanBeingRequest(response.getCommandData(), response.getCommandArgument())) {
+                        receiveResponse();
+                    }
                 }
+                OutputUtil.printSuccessfulMessage(response.toString());
             }
-            OutputUtil.printSuccessfulMessage(response.toString());
         } catch (SocketTimeoutException socketTimeoutException) {
             OutputUtil.printErrorMessage("The waiting time for a response from the server has been exceeded, try again later");
         } catch (IOException ioException) {
@@ -107,15 +110,37 @@ public class ClientHandler {
         }
     }
 
-    private void readCommandsFromScript(Path scriptFileName) throws IOException {
-        scriptHistory.add(scriptFileName);
-        if (scriptHistory.contains(scriptFileName)) {
+    private void readCommandsFromScript(String scriptFileName) {
+        Path script = Path.of(scriptFileName);
+        scriptHistory.add(script);
+        if (scriptHistory.contains(script)) {
             OutputUtil.printErrorMessage("Loop possible");
         }
         else {
-            scriptHistory.add(scriptFileName);
-            scriptReader.readCommandsFromFile(scriptFileName);
-
+            scriptHistory.add(script);
+            try {
+                scriptReader.readCommandsFromFile(scriptFileName);
+            } catch (IOException e) {
+                OutputUtil.printErrorMessage(e.getMessage());
+            }
+            ArrayList<String> commandsFromScript = scriptReader.getCommandsFromScript();
+            if (commandsFromScript.contains("execute_script " + scriptFileName)) {
+                OutputUtil.printErrorMessage("Script calls itself from inside. Loop possible");
+            } else {
+                for (int i=0; i < commandsFromScript.size(); i++) {
+                    String command = commandsFromScript.get(i);
+                    OutputUtil.printSuccessfulMessage(command);
+                    ArrayList<String> elementArg;
+                    if (i <= commandsFromScript.size()- HumanBeing.getNumberOfFields()-2) {
+                        elementArg = new ArrayList<>(commandsFromScript.subList(i+1, i + 2 + HumanBeing.getNumberOfFields()));
+                    } else {
+                        elementArg = new ArrayList<>(commandsFromScript.subList(i+1, commandsFromScript.size()));
+                    }
+                    Optional<CommandToSend> optionalCommandToSend = commandReader.readCommandsFromScript(command, elementArg);
+                    optionalCommandToSend.ifPresent(this::sendCommandRequest);
+                }
+                scriptHistory.remove(script);
+            }
         }
     }
 

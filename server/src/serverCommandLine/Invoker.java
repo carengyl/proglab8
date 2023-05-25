@@ -55,6 +55,10 @@ public class Invoker {
         }
     }
 
+    public HashMap<String, AbstractCommand> getSERVER_AVAILABLE_COMMAND() {
+        return SERVER_AVAILABLE_COMMAND;
+    }
+
     public HashMap<String, CommandData> getClientSendingCommand() {
         return CLIENT_SENDING_COMMANDS;
     }
