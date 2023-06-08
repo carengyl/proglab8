@@ -1,7 +1,6 @@
 package UDPutil;
 
 import commands.CommandArgument;
-import entities.HumanBeing;
 
 import java.io.Serializable;
 import java.time.LocalTime;
@@ -12,17 +11,32 @@ public class Request implements Serializable {
     private CommandArgument commandArgument;
     private String clientInfo;
     private LocalTime sendTime;
+    private String userLogin;
+    private String userPassword;
+    private final RequestType requestType;
 
     /**
      * Constructs dummy-instance to receive DatagramPacket with available commands
      */
     public Request() {
-        requestCommand = true;
+        this.requestCommand = true;
+        requestType = RequestType.INIT_COMMANDS;
     }
 
     public Request(String commandName, CommandArgument commandArgument) {
         this.commandName = commandName;
         this.commandArgument = commandArgument;
+        this.requestType = RequestType.COMMAND;
+    }
+
+    public Request(String login, String password, boolean logged) {
+        this.userLogin = login;
+        this.userPassword = password;
+        if (logged) {
+            this.requestType = RequestType.LOGIN;
+        } else {
+            this.requestType = RequestType.REGISTER;
+        }
     }
 
     public void setSendTime(LocalTime sendTime) {
@@ -47,5 +61,13 @@ public class Request implements Serializable {
 
     public boolean isRequestCommand() {
         return requestCommand;
+    }
+
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
     }
 }

@@ -35,6 +35,8 @@ public class ClientHandler {
     public void start() {
         this.inputAddress();
         this.inputPort();
+
+
         commandReader = new CommandReader(getCommandsFromServer());
         this.initClientCommands();
 
