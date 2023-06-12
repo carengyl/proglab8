@@ -24,6 +24,11 @@ public class CommandReader {
         this.availableClientCommands = new HashMap<>();
     }
 
+    public CommandReader() {
+        this.availableClientCommands = new HashMap<>();
+        this.availableServerCommands = new HashMap<>();
+    }
+
     public void addClientCommand(AbstractCommand command) {
         this.availableClientCommands.put(command.getCommandData().commandName(), command);
     }

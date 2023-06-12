@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public class Response implements Serializable {
+    private boolean success;
     private CommandData command;
     private String responseMessage;
     private HashMap<Long, HumanBeing> responseCollection;
@@ -23,6 +24,11 @@ public class Response implements Serializable {
 
     public Response(String responseMessage) {
         this.responseMessage = responseMessage;
+    }
+
+    public Response(String responseMessage, boolean success) {
+        this.responseMessage = responseMessage;
+        this.success = success;
     }
 
     public Response(String responseMessage, HumanBeing humanBeing) {
@@ -78,5 +84,9 @@ public class Response implements Serializable {
 
     public boolean isRequestScriptCommands() {
         return requestScriptCommands;
+    }
+
+    public boolean isSuccess() {
+        return success;
     }
 }

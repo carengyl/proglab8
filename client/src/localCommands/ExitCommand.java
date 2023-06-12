@@ -1,7 +1,7 @@
 package localCommands;
 
 import UDPutil.Response;
-import clientUtil.ClientHandler;
+import clientUtil.Session;
 import commands.AbstractCommand;
 import commands.CommandArgument;
 import commands.CommandData;
@@ -14,10 +14,10 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class ExitCommand extends AbstractCommand {
-    private final ClientHandler clientHandler;
-    public ExitCommand(ClientHandler handler) {
+    private final Session session;
+    public ExitCommand(Session handler) {
         super("exit", "Shut down client");
-        this.clientHandler = handler;
+        this.session = handler;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class ExitCommand extends AbstractCommand {
                 new Scanner(System.in));
         if (userInput) {
             OutputUtil.printSuccessfulMessage("Shutting down...");
-            clientHandler.toggleStatus();
+            session.turnOff();
         }
         return Optional.empty();
     }

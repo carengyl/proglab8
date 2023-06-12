@@ -1,6 +1,7 @@
 package UDPutil;
 
 import commands.CommandArgument;
+import commonUtil.UserData;
 
 import java.io.Serializable;
 import java.time.LocalTime;
@@ -11,8 +12,7 @@ public class Request implements Serializable {
     private CommandArgument commandArgument;
     private String clientInfo;
     private LocalTime sendTime;
-    private String userLogin;
-    private String userPassword;
+    private UserData userData;
     private final RequestType requestType;
 
     /**
@@ -29,10 +29,8 @@ public class Request implements Serializable {
         this.requestType = RequestType.COMMAND;
     }
 
-    public Request(String login, String password, boolean logged) {
-        this.userLogin = login;
-        this.userPassword = password;
-        if (logged) {
+    public Request(UserData userData, boolean registered) {
+        if (registered) {
             this.requestType = RequestType.LOGIN;
         } else {
             this.requestType = RequestType.REGISTER;
@@ -63,11 +61,7 @@ public class Request implements Serializable {
         return requestCommand;
     }
 
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public String getUserLogin() {
-        return userLogin;
+    public UserData getUserData() {
+        return userData;
     }
 }
