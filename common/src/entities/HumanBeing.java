@@ -139,6 +139,14 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
         return MIN_IMPACT_SPEED;
     }
 
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
+    }
+
     /**
      * Sets name field
      *
@@ -146,6 +154,10 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     /**
@@ -173,6 +185,10 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
         this.realHero = realHero;
     }
 
+    public boolean isRealHero() {
+        return realHero;
+    }
+
     /**
      * Sets has toothpick
      *
@@ -180,6 +196,10 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
      */
     public void setHasToothpick(boolean hasToothpick) {
         this.hasToothpick = hasToothpick;
+    }
+
+    public boolean isHasToothpick() {
+        return hasToothpick;
     }
 
     /**
@@ -191,6 +211,10 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
         this.impactSpeed = impactSpeed;
     }
 
+    public Double getImpactSpeed() {
+        return impactSpeed;
+    }
+
     /**
      * Sets minutes of waiting
      *
@@ -199,7 +223,6 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
     public void setMinutesOfWaiting(Double minutesOfWaiting) {
         this.minutesOfWaiting = minutesOfWaiting;
     }
-
     /**
      * @return minutes of waiting
      */
@@ -216,11 +239,16 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
         this.weaponType = weaponType;
     }
 
+    public WeaponType getWeaponType() {
+        return weaponType;
+    }
+
     /**
      * Sets mood
      *
      * @param mood parsed mood
      */
+
     public void setMood(Mood mood) {
         this.mood = mood;
     }

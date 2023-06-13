@@ -61,6 +61,22 @@ public class Car implements Serializable {
         return Car.class.getDeclaredFields().length - 1;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public int getHorsePowers() {
+        return horsePowers;
+    }
+
+    public CarBrand getCarBrand() {
+        return carBrand;
+    }
+
     /**
      * @return Cool field
      */

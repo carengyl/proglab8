@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="openengsb.wrapped.jcraft.jsch.all" type="repository">
+    <properties maven-id="org.openengsb.wrapped:com.jcraft.jsch-all:1.1.0.M2" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/com.jcraft.jsch-all-1.1.0.M2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jsch-0.1.42.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jzlib-1.0.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
