@@ -1,8 +1,14 @@
 package commands;
 
 import java.io.Serializable;
+import java.util.function.BiFunction;
 
-public record CommandData(String commandName, String commandDescription, int numberOfArgs, String argumentDescription, SerializableBiFunction<CommandArgument, CommandData, CommandArgument> validationFunction) implements Serializable {
+public record CommandData(String commandName,
+                          String commandDescription,
+                          int numberOfArgs,
+                          String argumentDescription,
+                          BiFunction<CommandArgument, CommandData, CommandArgument> validationFunction)
+        implements Serializable {
     @Override
     public String toString() {
         return "Command name: " + commandName + ", description: " + commandDescription

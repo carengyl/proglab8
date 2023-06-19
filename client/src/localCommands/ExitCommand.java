@@ -16,7 +16,11 @@ import java.util.Scanner;
 public class ExitCommand extends AbstractCommand {
     private final Session session;
     public ExitCommand(Session handler) {
-        super("exit", "Shut down client");
+        super("exit", "Shut down client",
+                (commandArgument, commandData) -> {
+                    Validators.validateNumberOfArgs(commandArgument.getNumberOfArgs(), commandData.numberOfArgs());
+                    return commandArgument;
+                });
         this.session = handler;
     }
 

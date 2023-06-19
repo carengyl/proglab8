@@ -1,4 +1,4 @@
-package serverCommands;
+package commands.serverCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
@@ -21,7 +21,10 @@ public class ServerSaveCommand extends AbstractCommand {
     private final CollectionManager collection;
 
     public ServerSaveCommand(CollectionManager collection) {
-        super("save", "Save collection to XML file");
+        super("save", "Save collection to XML file",
+                (commandArgument, commandData) -> { Validators.validateNumberOfArgs(commandArgument.getNumberOfArgs(), commandData.numberOfArgs());
+                return commandArgument;
+                });
         this.collection = collection;
     }
 

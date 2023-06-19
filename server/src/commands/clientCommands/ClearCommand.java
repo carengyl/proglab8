@@ -2,11 +2,12 @@ package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
+import commands.ArgumentValidationFunctions;
 import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.Validators;
-import exceptions.InvalidNumberOfArgsException;
 import entities.CollectionManager;
+import exceptions.InvalidNumberOfArgsException;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -15,7 +16,7 @@ public class ClearCommand extends AbstractCommand implements Serializable {
     private final CollectionManager collection;
 
     public ClearCommand(CollectionManager collection) {
-        super("clear", "Clear collection");
+        super("clear", "Clear collection", ArgumentValidationFunctions.VALIDATE_NUMBER_OF_ARGS.getValidationFunction());
         this.collection = collection;
     }
 

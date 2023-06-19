@@ -2,6 +2,7 @@ package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
+import commands.ArgumentValidationFunctions;
 import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.HumanBeingFactory;
@@ -18,7 +19,7 @@ public class RemoveGreaterCommand extends AbstractCommand implements Serializabl
     private final CollectionManager collection;
 
     public RemoveGreaterCommand(CollectionManager collection) {
-        super("remove_greater", "Remove all elements, which are greater than {element}");
+        super("remove_greater", "Remove all elements, which are greater than {element}", ArgumentValidationFunctions.VALIDATE_NUMBER_OF_ARGS.getValidationFunction());
         this.collection = collection;
     }
 

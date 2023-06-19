@@ -163,6 +163,7 @@ public class Session {
             return clientSocketHandler.receiveResponse().getAvailableCommands();
         } catch (IOException | ClassNotFoundException e) {
             OutputUtil.printErrorMessage("Unable to get commands from server.");
+            e.printStackTrace();
             try {
                 if (Validators.validateBooleanInput("Wait", scanner)) {
                     getCommandsFromServer();

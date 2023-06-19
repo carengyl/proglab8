@@ -1,4 +1,4 @@
-package serverCommands;
+package commands.serverCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
@@ -16,7 +16,10 @@ import java.util.Scanner;
 
 public class ServerExitCommand extends AbstractCommand {
     public ServerExitCommand() {
-        super("exit", "Shut down server program");
+        super("exit", "Shut down server program", ((commandArgument, commandData) -> {
+            Validators.validateNumberOfArgs(commandArgument.getNumberOfArgs(), commandData.numberOfArgs());
+            return commandArgument;
+        }));
     }
 
     @Override

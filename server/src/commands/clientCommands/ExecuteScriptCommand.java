@@ -2,6 +2,7 @@ package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
+import commands.ArgumentValidationFunctions;
 import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.Validators;
@@ -14,9 +15,12 @@ import java.util.Optional;
 
 public class ExecuteScriptCommand extends AbstractCommand implements Serializable {
     public ExecuteScriptCommand() {
-        super("execute_script", "Execute script from @file", 1, "@file - path to file with script");
+        super("execute_script",
+                "Execute script from @file",
+                1,
+                "@file - path to file with script",
+                ArgumentValidationFunctions.VALIDATE_FILE_NAME.getValidationFunction());
     }
-
 
     @Override
     public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {

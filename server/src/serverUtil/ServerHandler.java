@@ -1,6 +1,5 @@
 package serverUtil;
 
-import commands.clientCommands.*;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
 import dataBaseUtil.DBManager;
@@ -11,9 +10,6 @@ import exceptions.DatabaseException;
 import exceptions.NoUserInputException;
 import serverCommandLine.CommandManager;
 import serverCommandLine.ServerCommandReader;
-import serverCommands.ServerExitCommand;
-import serverCommands.ServerHelpCommand;
-import serverCommands.ServerSaveCommand;
 import threads.ConsoleThread;
 import threads.RequestThread;
 

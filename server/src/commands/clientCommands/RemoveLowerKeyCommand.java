@@ -2,6 +2,7 @@ package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
+import commands.ArgumentValidationFunctions;
 import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.Validators;
@@ -15,10 +16,13 @@ import java.util.Optional;
 
 public class RemoveLowerKeyCommand extends AbstractCommand implements Serializable {
     private final CollectionManager collection;
-    //TO-DO record description, function validate
-    //TO-DO execute_script, logic on server, read on client
+
     public RemoveLowerKeyCommand(CollectionManager collection) {
-        super("remove_lower_key", "Remove elements from collection, which key is lower than @key", 1, "@key - (long) unique key of element in collection");
+        super("remove_lower_key",
+                "Remove elements from collection, which key is lower than @key",
+                1,
+                "@key - (long) unique key of element in collection",
+                ArgumentValidationFunctions.VALIDATE_KEY.getValidationFunction());
         this.collection = collection;
     }
 

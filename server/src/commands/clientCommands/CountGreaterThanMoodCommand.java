@@ -2,14 +2,15 @@ package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
+import commands.ArgumentValidationFunctions;
 import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.Validators;
+import entities.CollectionManager;
 import entities.Mood;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
-import entities.CollectionManager;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -18,7 +19,8 @@ import java.util.Optional;
 public class CountGreaterThanMoodCommand extends AbstractCommand implements Serializable {
     private final CollectionManager collection;
     public CountGreaterThanMoodCommand(CollectionManager collection) {
-        super("count_greater_than_mood", "Count collection elements which mood is greater than @mood",1, "@mood from Mood enum");
+        super("count_greater_than_mood", "Count collection elements which mood is greater than @mood",1, "@mood from Mood enum",
+                ArgumentValidationFunctions.VALIDATE_MOOD.getValidationFunction());
         this.collection = collection;
     }
 

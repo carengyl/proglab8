@@ -17,7 +17,10 @@ public class HelpCommand extends AbstractCommand {
     private final HashMap<String, CommandData> serverCommands;
 
     public HelpCommand(HashMap<String, AbstractCommand> clientCommands, HashMap<String, CommandData> serverCommands) {
-        super("help", "Show all available commands");
+        super("help", "Show all available commands", (commandArgument, commandData) -> {
+            Validators.validateNumberOfArgs(commandArgument.getNumberOfArgs(), commandData.numberOfArgs());
+            return commandArgument;
+        });
         this.clientCommands = clientCommands;
         this.serverCommands = serverCommands;
     }

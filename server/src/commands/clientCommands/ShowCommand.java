@@ -2,6 +2,7 @@ package commands.clientCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
+import commands.ArgumentValidationFunctions;
 import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.Validators;
@@ -16,7 +17,8 @@ import java.util.Optional;
 public class ShowCommand extends AbstractCommand implements Serializable {
     private final CollectionManager collection;
     public ShowCommand(CollectionManager collection) {
-        super("show", "Show data about collection and elements");
+        super("show", "Show data about collection and elements",
+                ArgumentValidationFunctions.VALIDATE_NUMBER_OF_ARGS.getValidationFunction());
         this.collection = collection;
     }
 

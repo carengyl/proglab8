@@ -11,9 +11,9 @@ import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
-import serverCommands.ServerExitCommand;
-import serverCommands.ServerHelpCommand;
-import serverCommands.ServerSaveCommand;
+import commands.serverCommands.ServerExitCommand;
+import commands.serverCommands.ServerHelpCommand;
+import commands.serverCommands.ServerSaveCommand;
 import serverUtil.CommandProcessor;
 
 import java.util.HashMap;

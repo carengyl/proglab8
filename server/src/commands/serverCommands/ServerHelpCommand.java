@@ -1,4 +1,4 @@
-package serverCommands;
+package commands.serverCommands;
 
 import UDPutil.Response;
 import commands.AbstractCommand;
@@ -15,7 +15,10 @@ import java.util.Optional;
 public class ServerHelpCommand extends AbstractCommand {
     private final HashMap<String, AbstractCommand> commands;
     public ServerHelpCommand(HashMap<String, AbstractCommand> commands) {
-        super("help", "Show available commands");
+        super("help", "Show available commands", (commandArgument, commandData) -> {
+            Validators.validateNumberOfArgs(commandArgument.getNumberOfArgs(), commandData.numberOfArgs());
+            return commandArgument;
+        });
         this.commands = commands;
     }
 
