@@ -1,6 +1,7 @@
 package clientUtil;
 
 import UDPutil.Request;
+import UDPutil.Response;
 import commonUtil.OutputUtil;
 import commonUtil.UserData;
 import commonUtil.Validators;
@@ -33,7 +34,7 @@ public class ClientHandler {
                 user = registerUser(userData);
             }
             if (user.isPresent()) {
-                Session session = new Session(userData, scanner, clientSocketHandler);
+                Session session = new Session(user.get(), scanner, clientSocketHandler);
                 session.startSession();
             } else {
                 OutputUtil.printErrorMessage("You can't work with client unless you are not logged in. Shutting down...");
@@ -46,26 +47,34 @@ public class ClientHandler {
     private Optional<UserData> loginUser(UserData userData) {
         try {
             clientSocketHandler.sendRequest(new Request(userData, true));
-            if (clientSocketHandler.receiveResponse().isSuccess()) {
+            Response response = clientSocketHandler.receiveResponse();
+            if (response.isSuccess()) {
+                OutputUtil.printSuccessfulMessage(response);
                 return Optional.of(userData);
             } else {
+                OutputUtil.printErrorMessage(response);
                 return Optional.empty();
             }
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            OutputUtil.printErrorMessage(e.getMessage());
+            return Optional.empty();
         }
     }
 
     private Optional<UserData> registerUser(UserData userData) {
         try {
             clientSocketHandler.sendRequest(new Request(userData, false));
-            if (clientSocketHandler.receiveResponse().isSuccess()) {
+            Response response = clientSocketHandler.receiveResponse();
+            if (response.isSuccess()) {
+                OutputUtil.printSuccessfulMessage(response);
                 return Optional.of(userData);
             } else {
+                OutputUtil.printErrorMessage(response);
                 return Optional.empty();
             }
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            OutputUtil.printErrorMessage(e.getMessage());
+            return Optional.empty();
         }
     }
 

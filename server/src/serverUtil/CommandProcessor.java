@@ -16,6 +16,10 @@ public class CommandProcessor {
         this.collectionManager = collectionManager;
     }
 
+    public CollectionManager getCollectionManager() {
+        return collectionManager;
+    }
+
     public Response add(Request request) {
         try {
             if (dbManager.validateUser(request.getUserData().login(), request.getUserData().password())) {

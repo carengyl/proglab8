@@ -238,8 +238,8 @@ public class DBManager {
     public String getPassword(String username) throws DatabaseException {
         return dbConnector.handleQuery((Connection connection) -> {
             String getPasswordQuery = "SELECT (password) "
-                    + "FROM " + UsersDAO.UsersTableName
-                    + "WHERE " + UsersDAO.UsersTableName + ".login = ?;";
+                    + " FROM " + UsersDAO.UsersTableName
+                    + " WHERE " + UsersDAO.UsersTableName + ".login = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(getPasswordQuery);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -253,8 +253,8 @@ public class DBManager {
     public boolean checkUsersExistence(String username) throws DatabaseException {
         return dbConnector.handleQuery((Connection connection) -> {
             String existenceQuery = "SELECT COUNT (*) "
-                    + "FROM" + UsersDAO.UsersTableName
-                    + "WHERE " + UsersDAO.UsersTableName + ".login = ?;";
+                    + "FROM " + UsersDAO.UsersTableName
+                    + " WHERE " + UsersDAO.UsersTableName + ".login = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(existenceQuery);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();

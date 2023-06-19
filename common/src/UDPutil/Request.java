@@ -30,6 +30,7 @@ public class Request implements Serializable {
     }
 
     public Request(UserData userData, boolean registered) {
+        this.userData = userData;
         if (registered) {
             this.requestType = RequestType.LOGIN;
         } else {

@@ -18,6 +18,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="openengsb.wrapped.jcraft.jsch.all" level="project" />
+    <orderEntry type="library" name="jcraft.jsch" level="project" />
+    <orderEntry type="library" name="postgresql" level="project" />
   </component>
 </module>

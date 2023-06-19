@@ -25,7 +25,7 @@ public class ServerExitCommand extends AbstractCommand {
                 new Scanner(System.in));
         if (userInput) {
             OutputUtil.printSuccessfulMessage("Shutting down...");
-            ServerHandler.toggleRunning();
+            ServerHandler.turnOff();
         }
         return Optional.empty();
     }

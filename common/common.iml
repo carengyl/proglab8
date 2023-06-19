@@ -31,6 +31,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="glassfish.expressly" level="project" />
   </component>
 </module>

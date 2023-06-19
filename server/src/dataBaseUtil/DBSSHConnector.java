@@ -28,6 +28,7 @@ public class DBSSHConnector implements DBConnectable {
     private String svLogin;
     private String svPass;
     private String svAddr;
+    private String dbPass;
 
     private final int sshPort = 2222;
     private int forwardingPort;
@@ -37,14 +38,17 @@ public class DBSSHConnector implements DBConnectable {
             this.svLogin = System.getenv("SV_LOGIN");
             this.svPass = System.getenv("SV_PASS");
             this.svAddr = System.getenv("SV_ADDR");
+            this.dbPass = System.getenv("DB_PASS");
             this.forwardingPort = Integer.parseInt(System.getenv("FORWARDING_PORT"));
             connectSSH();
             initializeDB();
         } catch (SQLException e) {
-            OutputUtil.printErrorMessage("Error occurred during initializing tables!" + e.getMessage());
+            OutputUtil.printErrorMessage("Error occurred during initializing tables: " + e.getMessage());
+            e.printStackTrace();
             System.exit(1);
         } catch (JSchException e) {
             OutputUtil.printErrorMessage("Troubles during connecting to DB with ssh!");
+            OutputUtil.printErrorMessage(e.getMessage());
             System.exit(1);
         } catch (IllegalArgumentException e) {
             OutputUtil.printErrorMessage("Mistakes in environment variables!");
@@ -70,7 +74,7 @@ public class DBSSHConnector implements DBConnectable {
     }
 
     public void handleQuery(SQLConsumer<Connection> queryBody) throws DatabaseException {
-        try (Connection connection = DriverManager.getConnection(dbBase + "localhost:" + forwardingPort + "/" + dbName, svLogin, svPass)) {
+        try (Connection connection = DriverManager.getConnection(dbBase + "localhost:" + forwardingPort + "/" + dbName, svLogin, dbPass)) {
             queryBody.accept(connection);
         } catch (SQLException e) {
             throw new DatabaseException("Error occurred during working with DB: " + Arrays.toString(e.getStackTrace()));
@@ -78,7 +82,7 @@ public class DBSSHConnector implements DBConnectable {
     }
 
     public <T> T handleQuery(SQLFunction<Connection, T> queryBody) throws DatabaseException {
-        try (Connection connection = DriverManager.getConnection(dbBase + "localhost:" + forwardingPort + "/" + dbName, svLogin, svPass)) {
+        try (Connection connection = DriverManager.getConnection(dbBase + "localhost:" + forwardingPort + "/" + dbName, svLogin, dbPass)) {
             return queryBody.apply(connection);
         } catch (SQLException e) {
             throw new DatabaseException("Error occurred during working with DB: " + Arrays.toString(e.getStackTrace()));
@@ -87,7 +91,7 @@ public class DBSSHConnector implements DBConnectable {
 
     private void initializeDB() throws SQLException {
 
-        Connection connection = DriverManager.getConnection(dbBase + "localhost:" + forwardingPort + "/" + dbName, svLogin, svPass);
+        Connection connection = DriverManager.getConnection(dbBase + "localhost:" + forwardingPort + "/" + dbName, svLogin, dbPass);
 
         Statement statement = connection.createStatement();
 

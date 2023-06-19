@@ -5,23 +5,51 @@ import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
 import commands.CommandData;
+import commands.clientCommands.*;
 import commonUtil.OutputUtil;
+import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
+import serverCommands.ServerExitCommand;
+import serverCommands.ServerHelpCommand;
+import serverCommands.ServerSaveCommand;
 import serverUtil.CommandProcessor;
 
 import java.util.HashMap;
 import java.util.Optional;
 
 public class CommandManager {
+    private final CollectionManager collectionManager;
     private final HashMap<String, CommandData> CLIENT_SENDING_COMMANDS = new HashMap<>();
     private final HashMap<String, AbstractCommand> SERVER_AVAILABLE_COMMAND = new HashMap<>();
 
     private final HashMap<String, AbstractCommand> CLIENT_AVAILABLE_COMMAND = new HashMap<>();
 
     public CommandManager(CommandProcessor commandProcessor) {
+        this.collectionManager = commandProcessor.getCollectionManager();
+        initCommands();
+    }
 
+    private void initCommands() {
+        addClientCommand(new ClearCommand(collectionManager));
+        addClientCommand(new CountGreaterThanMoodCommand(collectionManager));
+        addClientCommand(new CountLessThanMinutesOfWaitingCommand(collectionManager));
+        addClientCommand(new FilterByCarCommand(collectionManager));
+
+        addClientCommand(new InfoCommand(collectionManager));
+        addClientCommand(new InsertCommand(collectionManager));
+        addClientCommand(new RemoveGreaterCommand(collectionManager));
+        addClientCommand(new RemoveKeyCommand(collectionManager));
+
+        addClientCommand(new RemoveLowerKeyCommand(collectionManager));
+        addClientCommand(new ShowCommand(collectionManager));
+        addClientCommand(new UpdateCommand(collectionManager));
+        addClientCommand(new ExecuteScriptCommand());
+
+        addServerCommand(new ServerExitCommand());
+        addServerCommand(new ServerSaveCommand(collectionManager));
+        addServerCommand(new ServerHelpCommand(this.getSERVER_AVAILABLE_COMMAND()));
     }
 
     public void addServerCommand(AbstractCommand command) {

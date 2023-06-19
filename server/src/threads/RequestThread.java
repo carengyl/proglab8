@@ -1,6 +1,7 @@
 package threads;
 
 import UDPutil.RequestType;
+import UDPutil.Response;
 import commonUtil.OutputUtil;
 import dataBaseUtil.DBSSHConnector;
 import serverCommandLine.CommandManager;
@@ -35,10 +36,13 @@ public class RequestThread implements Runnable {
                 Optional<RequestWithAddress> optionalRequestWithAddress = listenFuture.get();
                 if (optionalRequestWithAddress.isPresent()) {
                     RequestWithAddress acceptedRequest = optionalRequestWithAddress.get();
-                    CompletableFuture.supplyAsync(acceptedRequest::request)
+                    CompletableFuture
+                            .supplyAsync(acceptedRequest::request)
                             .thenApplyAsync(request -> {
                                if (request.getRequestType().equals(RequestType.COMMAND)) {
                                    return commandManager.executeClientCommand(request);
+                               } else if (request.getRequestType().equals(RequestType.INIT_COMMANDS)) {
+                                   return new Response(commandManager.getClientSendingCommand());
                                } else if (request.getRequestType().equals(RequestType.REGISTER)) {
                                    return usersManager.registerNewUser(request);
                                } else {
@@ -51,8 +55,7 @@ public class RequestThread implements Runnable {
                                 } catch (IOException e) {
                                     OutputUtil.printErrorMessage(e.getMessage());
                                 }
-                            });
-
+                            }, forkJoinPool);
                 }
             } catch (ExecutionException e) {
                 OutputUtil.printErrorMessage(e.getMessage());

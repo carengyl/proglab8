@@ -62,27 +62,6 @@ public class ServerHandler {
         ServerHandler.running = false;
     }
 
-    private void initCommands() {
-        commandManager.addClientCommand(new ClearCommand(collectionManager));
-        commandManager.addClientCommand(new CountGreaterThanMoodCommand(collectionManager));
-        commandManager.addClientCommand(new CountLessThanMinutesOfWaitingCommand(collectionManager));
-        commandManager.addClientCommand(new FilterByCarCommand(collectionManager));
-
-        commandManager.addClientCommand(new InfoCommand(collectionManager));
-        commandManager.addClientCommand(new InsertCommand(collectionManager));
-        commandManager.addClientCommand(new RemoveGreaterCommand(collectionManager));
-        commandManager.addClientCommand(new RemoveKeyCommand(collectionManager));
-
-        commandManager.addClientCommand(new RemoveLowerKeyCommand(collectionManager));
-        commandManager.addClientCommand(new ShowCommand(collectionManager));
-        commandManager.addClientCommand(new UpdateCommand(collectionManager));
-        commandManager.addClientCommand(new ExecuteScriptCommand());
-
-        commandManager.addServerCommand(new ServerExitCommand());
-        commandManager.addServerCommand(new ServerSaveCommand(collectionManager));
-        commandManager.addServerCommand(new ServerHelpCommand(commandManager.getSERVER_AVAILABLE_COMMAND()));
-    }
-
     public void startServerHandler() {
         try {
             inputPort();
