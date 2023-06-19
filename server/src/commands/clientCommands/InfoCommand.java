@@ -1,31 +1,32 @@
 package commands.clientCommands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.ArgumentValidationFunctions;
 import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.Validators;
-import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
+import serverUtil.CommandProcessor;
 
 import java.io.Serializable;
 import java.util.Optional;
 
 public class InfoCommand extends AbstractCommand implements Serializable {
 
-    private final CollectionManager collection;
+    private final CommandProcessor commandProcessor;
 
-    public InfoCommand(CollectionManager collection) {
+    public InfoCommand(CommandProcessor commandProcessor) {
         super("info", "Show info about collection", ArgumentValidationFunctions.VALIDATE_NUMBER_OF_ARGS.getValidationFunction());
-        this.collection = collection;
+        this.commandProcessor = commandProcessor;
     }
 
     @Override
-    public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        return Optional.of(new Response(collection.returnInfo()));
+    public Optional<Response> executeCommand(Request request) throws NoUserInputException {
+        return Optional.of(commandProcessor.info(request));
     }
 
     @Override

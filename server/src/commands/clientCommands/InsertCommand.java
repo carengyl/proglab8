@@ -1,5 +1,6 @@
 package commands.clientCommands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.ArgumentValidationFunctions;
@@ -7,45 +8,43 @@ import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.HumanBeingFactory;
 import commonUtil.Validators;
-import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
+import serverUtil.CommandProcessor;
 
 import java.io.Serializable;
 import java.util.Optional;
 
 public class InsertCommand extends AbstractCommand implements Serializable {
-    private final CollectionManager collection;
+    private final CommandProcessor commandProcessor;
 
-    public InsertCommand(CollectionManager collection) {
+    public InsertCommand(CommandProcessor commandProcessor) {
         super("insert",
                 "Add element to collection by @key",
                 1,
                 "@key - unique long of element",
                 ArgumentValidationFunctions.VALIDATE_KEY.getValidationFunction());
-        this.collection = collection;
+        this.commandProcessor = commandProcessor;
     }
 
     @Override
-    public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        long key = argument.getLongArg();
-        if (!collection.getHumanBeings().containsKey(key)) {
-            if (argument.getHumanBeingArgument() != null) {
-                collection.addByKey(key, argument.getHumanBeingArgument());
-                return Optional.of(new Response("Added Human Being by key: " + key,
-                        argument.getHumanBeingArgument()));
-            } else if (argument.getElementArgument() != null) {
+    public Optional<Response> executeCommand(Request request) throws NoUserInputException {
+        long key = request.getCommandArgument().getLongArg();
+        if (!commandProcessor.getCollectionManager().getHumanBeings().containsKey(key)) {
+            if (request.getCommandArgument().getHumanBeingArgument() != null) {
+                return Optional.of(commandProcessor.add(request));
+            } else if (request.getCommandArgument().getElementArgument() != null) {
                 HumanBeingFactory humanBeingFactory = new HumanBeingFactory();
                 try {
-                    humanBeingFactory.setVariables(argument.getElementArgument());
-                    collection.addByKey(key, humanBeingFactory.getCreatedHumanBeing());
-                    return Optional.of(new Response("Added Human Being by key: " + key, humanBeingFactory.getCreatedHumanBeing()));
+                    humanBeingFactory.setVariables(request.getCommandArgument().getElementArgument());
+                    request.getCommandArgument().setHumanBeingArgument(humanBeingFactory.getCreatedHumanBeing());
+                    return Optional.of(commandProcessor.add(request));
                 } catch (ValidationException e) {
                     return Optional.of(new Response(e.getMessage()));
                 }
             } else {
-                return Optional.of(new Response(this.getCommandData(), argument));
+                return Optional.of(new Response(this.getCommandData(), request.getCommandArgument()));
             }
         } else {
             return Optional.of(new Response("Key isn't unique"));

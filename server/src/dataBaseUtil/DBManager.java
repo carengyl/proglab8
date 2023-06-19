@@ -84,7 +84,7 @@ public class DBManager {
                     "owner_id)" +
                     "SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, id " +
                     "FROM " + UsersDAO.UsersTableName +
-                    "WHERE " + UsersDAO.UsersTableName + ".login = ?";
+                    " WHERE " + UsersDAO.UsersTableName + ".login = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(addElementQuery, Statement.RETURN_GENERATED_KEYS);
             Coordinates coordinates = humanBeing.getCoordinates();
 
@@ -97,6 +97,11 @@ public class DBManager {
             preparedStatement.setBoolean(7, humanBeing.isHasToothpick());
             if (humanBeing.getImpactSpeed() != null) {
                 preparedStatement.setLong(8, humanBeing.getImpactSpeed().longValue());
+            } else {
+                preparedStatement.setNull(8, Types.DOUBLE);
+            }
+            if (humanBeing.getMinutesOfWaiting() != null) {
+                preparedStatement.setLong(9, humanBeing.getImpactSpeed().longValue());
             } else {
                 preparedStatement.setNull(9, Types.DOUBLE);
             }
@@ -142,52 +147,56 @@ public class DBManager {
         return dbConnector.handleQuery((Connection connection) -> {
             connection.createStatement().execute("BEGIN TRANSACTION;");
             String updateQuery = "UPDATE " + HumanBeingDAO.HumanBeingTableName + " " +
-                    "SET creationDate=?, " +
-                    "name=?, " +
-                    "x=?, " +
-                    "y=?, " +
-                    "realHero=?, " +
-                    "hasToothPick=?, " +
-                    "impactSpeed=?, " +
-                    "minutesOfWaiting=?, " +
-                    "weaponType=?, " +
-                    "mood=?, " +
-                    "carName=?, " +
-                    "carCost=?, " +
-                    "carHorsePowers=?, " +
-                    "carCarBrand=?, " +
-                    "FROM " + HumanBeingDAO.HumanBeingTableName + ".id = ? " +
+                    "SET name = ?, " +
+                    "x = ?, " +
+                    "y = ?, " +
+                    "realHero = ?, " +
+                    "hasToothPick = ?, " +
+                    "impactSpeed = ?, " +
+                    "minutesOfWaiting = ?, " +
+                    "weaponType = ?, " +
+                    "mood = ?, " +
+                    "carName = ?, " +
+                    "carCost = ?, " +
+                    "carHorsePowers = ?, " +
+                    "carCarBrand = ? " +
+                    "FROM " + UsersDAO.UsersTableName +
+                    " WHERE " + HumanBeingDAO.HumanBeingTableName + ".id = ? " +
                     "AND " + HumanBeingDAO.HumanBeingTableName + ".owner_id = " + UsersDAO.UsersTableName + ".id " +
                     "AND " + UsersDAO.UsersTableName + ".login = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
             Coordinates coordinates = humanBeing.getCoordinates();
 
-            preparedStatement.setDate(1, Date.valueOf(humanBeing.getCreationDate()));
-            preparedStatement.setString(2, humanBeing.getName());
-            preparedStatement.setInt(3, coordinates.getX());
-            preparedStatement.setInt(4, coordinates.getY());
-            preparedStatement.setBoolean(5, humanBeing.isRealHero());
-            preparedStatement.setBoolean(6, humanBeing.isHasToothpick());
+            preparedStatement.setString(1, humanBeing.getName());
+            preparedStatement.setInt(2, coordinates.getX());
+            preparedStatement.setInt(3, coordinates.getY());
+            preparedStatement.setBoolean(4, humanBeing.isRealHero());
+            preparedStatement.setBoolean(5, humanBeing.isHasToothpick());
             if (humanBeing.getImpactSpeed() != null) {
+                preparedStatement.setLong(6, humanBeing.getImpactSpeed().longValue());
+            } else {
+                preparedStatement.setNull(6, Types.DOUBLE);
+            }
+            if (humanBeing.getMinutesOfWaiting() != null) {
                 preparedStatement.setLong(7, humanBeing.getImpactSpeed().longValue());
             } else {
-                preparedStatement.setNull(8, Types.DOUBLE);
+                preparedStatement.setNull(7, Types.DOUBLE);
             }
-            preparedStatement.setString(9, humanBeing.getWeaponType().toString());
-            preparedStatement.setString(10, humanBeing.getMood().toString());
+            preparedStatement.setString(8, humanBeing.getWeaponType().toString());
+            preparedStatement.setString(9, humanBeing.getMood().toString());
             if (humanBeing.getCar() == null) {
-                preparedStatement.setNull(11, Types.VARCHAR);
+                preparedStatement.setNull(10, Types.VARCHAR);
+                preparedStatement.setNull(11, Types.INTEGER);
                 preparedStatement.setNull(12, Types.INTEGER);
-                preparedStatement.setNull(13, Types.INTEGER);
-                preparedStatement.setNull(14, Types.VARCHAR);
+                preparedStatement.setNull(13, Types.VARCHAR);
             } else {
-                preparedStatement.setString(11, humanBeing.getCar().getName());
-                preparedStatement.setInt(12, humanBeing.getCar().getCost());
-                preparedStatement.setInt(13, humanBeing.getCar().getHorsePowers());
-                preparedStatement.setString(14, humanBeing.getCar().getCarBrand().toString());
+                preparedStatement.setString(10, humanBeing.getCar().getName());
+                preparedStatement.setInt(11, humanBeing.getCar().getCost());
+                preparedStatement.setInt(12, humanBeing.getCar().getHorsePowers());
+                preparedStatement.setString(13, humanBeing.getCar().getCarBrand().toString());
             }
-            preparedStatement.setLong(15, id);
-            preparedStatement.setString(16, userName);
+            preparedStatement.setLong(14, id);
+            preparedStatement.setString(15, userName);
 
             int updatedRows = preparedStatement.executeUpdate();
             connection.createStatement().execute("COMMIT;");
@@ -267,7 +276,7 @@ public class DBManager {
 
     public List<Long> getIdsOfUsersElements(String username) throws DatabaseException {
         return dbConnector.handleQuery((Connection connection) -> {
-            String getIdsQuery = "SELECT" + HumanBeingDAO.HumanBeingTableName + ".id FROM" + HumanBeingDAO.HumanBeingTableName + " " + UsersDAO.UsersTableName
+            String getIdsQuery = "SELECT" + HumanBeingDAO.HumanBeingTableName + ".id FROM" + HumanBeingDAO.HumanBeingTableName + ", " + UsersDAO.UsersTableName
                     + " WHERE" + HumanBeingDAO.HumanBeingTableName + ".owner_id = " + UsersDAO.UsersTableName + ".id " +
                     " AND " + UsersDAO.UsersTableName + ".login = ?;";
             return getLongs(username, connection, getIdsQuery);

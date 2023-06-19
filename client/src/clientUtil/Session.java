@@ -77,6 +77,7 @@ public class Session {
 
     private boolean sendRequest(Request request) {
         try {
+            request.setUserData(userData);
             request.setClientInfo(clientSocketHandler.getAddress() + ":" + clientSocketHandler.getPort());
             request.setSendTime(LocalTime.now());
             clientSocketHandler.sendRequest(request);

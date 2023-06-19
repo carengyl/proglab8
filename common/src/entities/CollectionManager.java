@@ -78,6 +78,21 @@ public class CollectionManager implements Serializable {
         return maxId;
     }
 
+    public List<Long> returnIDsOFGreater(HumanBeing humanBeing) {
+        try {
+            reentrantLock.lock();
+            List<Long> ids = new ArrayList<>();
+            for (HumanBeing h: humanBeings.values()) {
+                if (humanBeing.compareTo(h) < 0) {
+                    ids.add(h.getId());
+                }
+            }
+            return ids;
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
+
     /**
      * @return path to file
      */
@@ -161,6 +176,16 @@ public class CollectionManager implements Serializable {
             }
         } finally {
             reentrantLock.unlock();
+        }
+    }
+
+    public void removeById(Long id) {
+        Set<Long> keysCopy = Set.copyOf(humanBeings.keySet());
+        for(long key: keysCopy) {
+            if (humanBeings.get(key).getId().equals(id)) {
+                humanBeings.remove(key);
+                break;
+            }
         }
     }
 

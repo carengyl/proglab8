@@ -1,5 +1,6 @@
 package commands.serverCommands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
@@ -23,7 +24,7 @@ public class ServerHelpCommand extends AbstractCommand {
     }
 
     @Override
-    public Optional<Response> executeCommand(CommandArgument argument) {
+    public Optional<Response> executeCommand(Request request) {
         OutputUtil.printSuccessfulMessage("Builtin commands:");
         for (AbstractCommand command: commands.values()) {
             OutputUtil.printSuccessfulMessage(command);

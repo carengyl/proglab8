@@ -1,5 +1,6 @@
 package commands.serverCommands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
@@ -23,7 +24,7 @@ public class ServerExitCommand extends AbstractCommand {
     }
 
     @Override
-    public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
+    public Optional<Response> executeCommand(Request request) throws NoUserInputException {
         boolean userInput = Validators.validateBooleanInput("Shut down (everything not saved will be lost)",
                 new Scanner(System.in));
         if (userInput) {

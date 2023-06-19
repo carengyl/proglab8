@@ -6,49 +6,44 @@ import commands.AbstractCommand;
 import commands.CommandArgument;
 import commands.CommandData;
 import commands.clientCommands.*;
+import commands.serverCommands.ServerExitCommand;
+import commands.serverCommands.ServerHelpCommand;
 import commonUtil.OutputUtil;
-import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
-import commands.serverCommands.ServerExitCommand;
-import commands.serverCommands.ServerHelpCommand;
-import commands.serverCommands.ServerSaveCommand;
 import serverUtil.CommandProcessor;
 
 import java.util.HashMap;
 import java.util.Optional;
 
 public class CommandManager {
-    private final CollectionManager collectionManager;
+    private final CommandProcessor commandProcessor;
     private final HashMap<String, CommandData> CLIENT_SENDING_COMMANDS = new HashMap<>();
     private final HashMap<String, AbstractCommand> SERVER_AVAILABLE_COMMAND = new HashMap<>();
 
     private final HashMap<String, AbstractCommand> CLIENT_AVAILABLE_COMMAND = new HashMap<>();
 
     public CommandManager(CommandProcessor commandProcessor) {
-        this.collectionManager = commandProcessor.getCollectionManager();
+        this.commandProcessor = commandProcessor;
         initCommands();
     }
 
     private void initCommands() {
-        addClientCommand(new ClearCommand(collectionManager));
-        addClientCommand(new CountGreaterThanMoodCommand(collectionManager));
-        addClientCommand(new CountLessThanMinutesOfWaitingCommand(collectionManager));
-        addClientCommand(new FilterByCarCommand(collectionManager));
-
-        addClientCommand(new InfoCommand(collectionManager));
-        addClientCommand(new InsertCommand(collectionManager));
-        addClientCommand(new RemoveGreaterCommand(collectionManager));
-        addClientCommand(new RemoveKeyCommand(collectionManager));
-
-        addClientCommand(new RemoveLowerKeyCommand(collectionManager));
-        addClientCommand(new ShowCommand(collectionManager));
-        addClientCommand(new UpdateCommand(collectionManager));
+        addClientCommand(new ClearCommand(commandProcessor));
+        addClientCommand(new CountGreaterThanMoodCommand(commandProcessor));
+        addClientCommand(new CountLessThanMinutesOfWaitingCommand(commandProcessor));
         addClientCommand(new ExecuteScriptCommand());
+        addClientCommand(new FilterByCarCommand(commandProcessor));
+        addClientCommand(new InfoCommand(commandProcessor));
+        addClientCommand(new InsertCommand(commandProcessor));
+        addClientCommand(new RemoveGreaterCommand(commandProcessor));
+        addClientCommand(new RemoveKeyCommand(commandProcessor));
+        addClientCommand(new RemoveLowerKeyCommand(commandProcessor));
+        addClientCommand(new ShowCommand(commandProcessor));
+        addClientCommand(new UpdateCommand(commandProcessor));
 
         addServerCommand(new ServerExitCommand());
-        addServerCommand(new ServerSaveCommand(collectionManager));
         addServerCommand(new ServerHelpCommand(this.getSERVER_AVAILABLE_COMMAND()));
     }
 
@@ -64,7 +59,7 @@ public class CommandManager {
         AbstractCommand executableCommand = CLIENT_AVAILABLE_COMMAND.get(request.getCommandName());
         Optional<Response> optionalResponse = Optional.empty();
         try {
-            optionalResponse = executableCommand.executeCommand(request.getCommandArgument());
+            optionalResponse = executableCommand.executeCommand(request);
         } catch (NoUserInputException e) {
             //Suppress exception, because there will be no input from user
             e.getSuppressed();
@@ -79,7 +74,7 @@ public class CommandManager {
             try {
                 AbstractCommand executableCommand = SERVER_AVAILABLE_COMMAND.get(commandName);
                 CommandArgument validatedArg = executableCommand.validateArguments(argument, executableCommand.getCommandData());
-                executableCommand.executeCommand(validatedArg);
+                executableCommand.executeCommand(new Request(commandName, validatedArg));
             } catch (ValidationException | InvalidNumberOfArgsException e) {
                 OutputUtil.printErrorMessage(e.getMessage());
             }

@@ -1,5 +1,6 @@
 package commands.clientCommands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.ArgumentValidationFunctions;
@@ -23,8 +24,8 @@ public class ExecuteScriptCommand extends AbstractCommand implements Serializabl
     }
 
     @Override
-    public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        return Optional.of(new Response(argument));
+    public Optional<Response> executeCommand(Request request) throws NoUserInputException {
+        return Optional.of(new Response(request.getCommandArgument()));
     }
 
     @Override

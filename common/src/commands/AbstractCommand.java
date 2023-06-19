@@ -1,12 +1,12 @@
 package commands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
 
 import java.io.Serializable;
-import java.util.ArrayDeque;
 import java.util.Optional;
 
 public abstract class AbstractCommand implements Serializable {
@@ -28,7 +28,7 @@ public abstract class AbstractCommand implements Serializable {
                 validationFunction);
     }
 
-    public abstract Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException;
+    public abstract Optional<Response> executeCommand(Request request) throws NoUserInputException;
 
     public abstract CommandArgument validateArguments(CommandArgument argument, CommandData commandData) throws ValidationException, InvalidNumberOfArgsException;
 

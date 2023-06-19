@@ -2,7 +2,7 @@ package dataBaseUtil.DAOs;
 
 public class UsersDAO {
     public static final String UsersIdSequenceName = " s368587users_id_seq";
-    public static final String UsersTableName = " s336189users";
+    public static final String UsersTableName = " s368587users";
 
     public static String getInitIdSequenceStatement() {
         return"CREATE SEQUENCE IF NOT EXISTS " + UsersIdSequenceName + " INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1";

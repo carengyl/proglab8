@@ -1,5 +1,6 @@
 package commands.clientCommands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.ArgumentValidationFunctions;
@@ -11,6 +12,7 @@ import entities.Mood;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
+import serverUtil.CommandProcessor;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -18,15 +20,15 @@ import java.util.Optional;
 
 public class CountGreaterThanMoodCommand extends AbstractCommand implements Serializable {
     private final CollectionManager collection;
-    public CountGreaterThanMoodCommand(CollectionManager collection) {
+    public CountGreaterThanMoodCommand(CommandProcessor commandProcessor) {
         super("count_greater_than_mood", "Count collection elements which mood is greater than @mood",1, "@mood from Mood enum",
                 ArgumentValidationFunctions.VALIDATE_MOOD.getValidationFunction());
-        this.collection = collection;
+        this.collection = commandProcessor.getCollectionManager();
     }
 
     @Override
-    public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        Mood mood = Mood.getMoodByNumber(argument.getEnumNumber());
+    public Optional<Response> executeCommand(Request request) throws NoUserInputException {
+        Mood mood = Mood.getMoodByNumber(request.getCommandArgument().getEnumNumber());
         int greaterMoods = 0;
         for (long key: collection.getHumanBeings().keySet()) {
             if (Objects.requireNonNull(mood).compareTo(collection.getHumanBeings().get(key).getMood()) < 0) {

@@ -25,7 +25,7 @@ public class ServerHandler {
     private final DBManager dbManager;
     private final UsersManager usersManager;
     private ServerSocketHandler serverSocketHandler;
-    private CommandProcessor commandProcessor;
+    private final CommandProcessor commandProcessor;
     private final ServerCommandReader commandReader;
     private final serverCommandLine.CommandManager commandManager;
     private final CollectionManager collectionManager;

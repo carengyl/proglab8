@@ -1,5 +1,6 @@
 package commands.clientCommands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.ArgumentValidationFunctions;
@@ -10,27 +11,29 @@ import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
+import serverUtil.CommandProcessor;
 
 import java.io.Serializable;
 import java.util.Optional;
 
 public class RemoveKeyCommand extends AbstractCommand implements Serializable {
-    private final CollectionManager collection;
+    private final CommandProcessor commandProcessor;
 
-    public RemoveKeyCommand(CollectionManager collection) {
+    public RemoveKeyCommand(CommandProcessor commandProcessor) {
         super("remove_key",
                 "Remove element from collection by @key",
                 1,
                 "@key - (long) unique key of element in collection",
                 ArgumentValidationFunctions.VALIDATE_KEY.getValidationFunction());
-        this.collection = collection;
+        this.commandProcessor = commandProcessor;
     }
 
     @Override
-    public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        long key = argument.getLongArg();
-        if (collection.getHumanBeings().containsKey(key)) {
-            return Optional.of(new Response(collection.removeByKey(key)));
+    public Optional<Response> executeCommand(Request request) throws NoUserInputException {
+        long key = request.getCommandArgument().getLongArg();
+        if (commandProcessor.getCollectionManager().getHumanBeings().containsKey(key)) {
+            request.getCommandArgument().setLongArg(commandProcessor.getCollectionManager().getHumanBeings().get(key).getId());
+            return Optional.of(commandProcessor.removeById(request));
         } else {
             return Optional.of(new Response("Key not found"));
         }

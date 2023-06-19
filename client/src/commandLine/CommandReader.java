@@ -1,5 +1,6 @@
 package commandLine;
 
+import UDPutil.Request;
 import clientUtil.CommandToSend;
 import commands.AbstractCommand;
 import commands.CommandArgument;
@@ -62,7 +63,7 @@ public class CommandReader {
             try {
                 AbstractCommand executableCommand = availableClientCommands.get(commandName);
                 CommandArgument validatedArgs = executableCommand.validateArguments(argument, executableCommand.getCommandData());
-                executableCommand.executeCommand(validatedArgs);
+                executableCommand.executeCommand(new Request(commandName, validatedArgs));
                 return Optional.empty();
             } catch (ValidationException | InvalidNumberOfArgsException e) {
                 OutputUtil.printErrorMessage(e.getMessage());

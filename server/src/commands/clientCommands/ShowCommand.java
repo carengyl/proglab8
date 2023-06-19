@@ -1,5 +1,6 @@
 package commands.clientCommands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.ArgumentValidationFunctions;
@@ -10,30 +11,22 @@ import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
+import serverUtil.CommandProcessor;
 
 import java.io.Serializable;
 import java.util.Optional;
 
 public class ShowCommand extends AbstractCommand implements Serializable {
-    private final CollectionManager collection;
-    public ShowCommand(CollectionManager collection) {
+    private final CommandProcessor commandProcessor;
+    public ShowCommand(CommandProcessor commandProcessor) {
         super("show", "Show data about collection and elements",
                 ArgumentValidationFunctions.VALIDATE_NUMBER_OF_ARGS.getValidationFunction());
-        this.collection = collection;
+        this.commandProcessor = commandProcessor;
     }
 
     @Override
-    public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Collection from file: ").append(collection.getFileName()).append("\n");
-        if (!collection.getHumanBeings().isEmpty()) {
-            for (long key : collection.getHumanBeings().keySet()) {
-                stringBuilder.append("Key: ").append(key).append("; ").append(collection.getHumanBeings().get(key).toString()).append("\n");
-            }
-        } else {
-            stringBuilder.append("Collection is empty");
-        }
-        return Optional.of(new Response(stringBuilder.toString()));
+    public Optional<Response> executeCommand(Request request) throws NoUserInputException {
+        return Optional.of(commandProcessor.show(request));
     }
 
     @Override

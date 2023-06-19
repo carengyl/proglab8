@@ -1,5 +1,6 @@
 package localCommands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.CommandArgument;
@@ -26,7 +27,7 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public Optional<Response> executeCommand(CommandArgument argument) {
+    public Optional<Response> executeCommand(Request request) {
         OutputUtil.printSuccessfulMessage("Server commands:");
         for (String command: serverCommands.keySet()) {
             OutputUtil.printSuccessfulMessage(serverCommands.get(command).toString());

@@ -1,5 +1,6 @@
 package commands.clientCommands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.ArgumentValidationFunctions;
@@ -7,49 +8,38 @@ import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.HumanBeingFactory;
 import commonUtil.Validators;
-import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
+import serverUtil.CommandProcessor;
 
 import java.io.Serializable;
 import java.util.Optional;
 
 public class RemoveGreaterCommand extends AbstractCommand implements Serializable {
-    private final CollectionManager collection;
+    private final CommandProcessor commandProcessor;
 
-    public RemoveGreaterCommand(CollectionManager collection) {
+    public RemoveGreaterCommand(CommandProcessor commandProcessor) {
         super("remove_greater", "Remove all elements, which are greater than {element}", ArgumentValidationFunctions.VALIDATE_NUMBER_OF_ARGS.getValidationFunction());
-        this.collection = collection;
+        this.commandProcessor = commandProcessor;
     }
 
     @Override
-    public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        if (argument.getHumanBeingArgument() != null) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (long key : collection.getHumanBeings().keySet()) {
-                if (collection.getHumanBeings().get(key).compareTo(argument.getHumanBeingArgument()) > 0) {
-                    stringBuilder.append(collection.removeByKey(key)).append("\n");
-                }
-            }
-            return Optional.of(new Response(stringBuilder.toString()));
+    public Optional<Response> executeCommand(Request request) throws NoUserInputException {
+        if (request.getCommandArgument().getHumanBeingArgument() != null) {
+            return Optional.of(commandProcessor.removeGreater(request));
         }
-        else if (argument.getElementArgument() != null) {
+        else if (request.getCommandArgument().getElementArgument() != null) {
           try {
               HumanBeingFactory humanBeingFactory = new HumanBeingFactory();
-              humanBeingFactory.setVariables(argument.getElementArgument());
-              StringBuilder stringBuilder = new StringBuilder();
-              for (long key : collection.getHumanBeings().keySet()) {
-                  if (collection.getHumanBeings().get(key).compareTo(humanBeingFactory.getCreatedHumanBeing()) > 0) {
-                      stringBuilder.append(collection.removeByKey(key)).append("\n");
-                  }
-              }
-              return Optional.of(new Response(stringBuilder.toString()));
+              humanBeingFactory.setVariables(request.getCommandArgument().getElementArgument());
+              request.getCommandArgument().setHumanBeingArgument(humanBeingFactory.getCreatedHumanBeing());
+              return Optional.of(commandProcessor.removeGreater(request));
           } catch (ValidationException e) {
               return Optional.of(new Response(e.getMessage()));
           }
         } else {
-            return Optional.of(new Response(this.getCommandData(), argument));
+            return Optional.of(new Response(this.getCommandData(), request.getCommandArgument()));
         }
     }
     @Override

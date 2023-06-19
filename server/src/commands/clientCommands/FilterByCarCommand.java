@@ -1,5 +1,6 @@
 package commands.clientCommands;
 
+import UDPutil.Request;
 import UDPutil.Response;
 import commands.AbstractCommand;
 import commands.ArgumentValidationFunctions;
@@ -10,6 +11,7 @@ import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
+import serverUtil.CommandProcessor;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -18,18 +20,18 @@ import java.util.Optional;
 public class FilterByCarCommand extends AbstractCommand implements Serializable {
     private final CollectionManager collection;
 
-    public FilterByCarCommand(CollectionManager collection) {
+    public FilterByCarCommand(CommandProcessor commandProcessor) {
         super("filter_by_car",
                 "Show collection elements, which car equals @car",
                 1,
                 "@car - \"true\" string equals true, others to false",
                 ArgumentValidationFunctions.VALIDATE_BOOLEAN.getValidationFunction());
-        this.collection = collection;
+        this.collection = commandProcessor.getCollectionManager();
     }
 
     @Override
-    public Optional<Response> executeCommand(CommandArgument argument) throws NoUserInputException {
-        boolean car = argument.isBooleanArg();
+    public Optional<Response> executeCommand(Request request) throws NoUserInputException {
+        boolean car = request.getCommandArgument().isBooleanArg();
 
         Optional<Response> optionalResponse;
 
