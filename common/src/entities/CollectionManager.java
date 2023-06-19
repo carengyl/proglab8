@@ -1,23 +1,19 @@
 package entities;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Collection data structure
  *
  * @author carengyl
  */
-@XStreamAlias("collection")
-public class CollectionOfHumanBeings implements Serializable {
+public class CollectionManager implements Serializable {
+    private final ReentrantLock reentrantLock = new ReentrantLock();
     /**
      * File name field
      */
@@ -29,15 +25,20 @@ public class CollectionOfHumanBeings implements Serializable {
     /**
      * Hashmap of {@code HumanBeing}
      */
-    @XStreamImplicit
-    private final HashMap<Long, HumanBeing> humanBeings;
+
+    private HashMap<Long, HumanBeing> humanBeings;
+
+    public CollectionManager() {
+        initDate = LocalDate.now();
+        humanBeings = new HashMap<>();
+    }
 
     /**
      * Constructs new instance with given path
      *
      * @param fileName path to file
      */
-    public CollectionOfHumanBeings(Path fileName) {
+    public CollectionManager(Path fileName) {
         this.fileName = fileName;
         humanBeings = new HashMap<>();
         initDate = LocalDate.now();
@@ -49,13 +50,21 @@ public class CollectionOfHumanBeings implements Serializable {
      * @param fileName path to file
      * @param humanBeings parsed {@code Hashmap<Long, HumanBeing>}
      */
-    public CollectionOfHumanBeings(Path fileName, HashMap<Long,HumanBeing> humanBeings) {
+    public CollectionManager(Path fileName, HashMap<Long,HumanBeing> humanBeings) {
         this.fileName = fileName;
         this.initDate = LocalDate.now();
         this.humanBeings = humanBeings;
         HumanBeing.setCurrentId(getMaxID());
     }
 
+    public void setHumanBeings(HashMap<Long, HumanBeing> humanBeings) {
+        try {
+            reentrantLock.lock();
+            this.humanBeings = humanBeings;
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
     /**
      * @return max ID of {@code HumanBeing} from collection
      */
@@ -95,12 +104,17 @@ public class CollectionOfHumanBeings implements Serializable {
      * @return true if given id is in collection
      */
     public boolean checkForId(long id) {
-        for (long key: humanBeings.keySet()) {
-            if (humanBeings.get(key).getId().equals(id)) {
-                return true;
+        try {
+            reentrantLock.lock();
+            for (long key : humanBeings.keySet()) {
+                if (humanBeings.get(key).getId().equals(id)) {
+                    return true;
+                }
             }
+            return false;
+        } finally {
+            reentrantLock.unlock();
         }
-        return false;
     }
 
     /**
@@ -110,14 +124,24 @@ public class CollectionOfHumanBeings implements Serializable {
      * @param humanBeing parsed {@code HumanBeing}
      */
     public void addByKey(long key, HumanBeing humanBeing) {
-        humanBeings.put(key, humanBeing);
+        try {
+            reentrantLock.lock();
+            humanBeings.put(key, humanBeing);
+        } finally {
+            reentrantLock.unlock();
+        }
     }
 
     /**
      * @return collection
      */
     public HashMap<Long, HumanBeing> getHumanBeings() {
-        return humanBeings;
+        try {
+            reentrantLock.lock();
+            return humanBeings;
+        } finally {
+            reentrantLock.unlock();
+        }
     }
 
     /**
@@ -127,11 +151,16 @@ public class CollectionOfHumanBeings implements Serializable {
      * @param humanBeing new parsed HumanBeing
      */
     public void updateById(long id, HumanBeing humanBeing) {
-        for (long key: humanBeings.keySet()) {
-            if (Objects.equals(humanBeings.get(key).getId(), id)) {
-                humanBeings.replace(key, humanBeing);
-                return;
+        try {
+            reentrantLock.lock();
+            for (long key: humanBeings.keySet()) {
+                if (Objects.equals(humanBeings.get(key).getId(), id)) {
+                    humanBeings.replace(key, humanBeing);
+                    return;
+                }
             }
+        } finally {
+            reentrantLock.unlock();
         }
     }
 
@@ -151,6 +180,36 @@ public class CollectionOfHumanBeings implements Serializable {
         return stringBuilder.toString();
     }
 
+    public Set<HumanBeing> getUsersElements(List<Long> ids) {
+        try {
+            reentrantLock.lock();
+            Set<HumanBeing> result = new HashSet<>();
+            for (HumanBeing humanBeing : humanBeings.values()) {
+                if (ids.contains(humanBeing.getId())) {
+                    result.add(humanBeing);
+                }
+            }
+            return result.isEmpty() ? null : result;
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
+
+    public Set<HumanBeing> getAlienElements(List<Long> ids) {
+        try {
+            reentrantLock.lock();
+            Set<HumanBeing> result = new HashSet<>();
+            for (HumanBeing humanBeing : humanBeings.values()) {
+                if (!ids.contains(humanBeing.getId())) {
+                    result.add(humanBeing);
+                }
+            }
+            return result.isEmpty() ? null : result;
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
+
     /**
      * Removes instance from collection by given key
      *
@@ -161,10 +220,15 @@ public class CollectionOfHumanBeings implements Serializable {
         return "Deleted element by key:" + key;
     }
 
-    @Override
-    public String toString() {
-        return "Collection from file: " + this.getFileName() +
-                "; initialized: " + this.getInitDate() +
-                "; number of elements: " + this.getHumanBeings().size();
+    public String returnInfo() {
+        try {
+            reentrantLock.lock();
+            return "Collection type: " + humanBeings.getClass().toString().substring(6) +
+                    "; type of elements: "+ HumanBeing.class.toString().substring(6) +
+                    "; initialized: " + initDate +
+                    "; number of elements: " + humanBeings.size();
+        } finally {
+            reentrantLock.unlock();
+        }
     }
 }

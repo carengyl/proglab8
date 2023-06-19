@@ -9,15 +9,20 @@ import commonUtil.OutputUtil;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
+import serverUtil.CommandProcessor;
 
 import java.util.HashMap;
 import java.util.Optional;
 
-public class Invoker {
+public class CommandManager {
     private final HashMap<String, CommandData> CLIENT_SENDING_COMMANDS = new HashMap<>();
     private final HashMap<String, AbstractCommand> SERVER_AVAILABLE_COMMAND = new HashMap<>();
 
     private final HashMap<String, AbstractCommand> CLIENT_AVAILABLE_COMMAND = new HashMap<>();
+
+    public CommandManager(CommandProcessor commandProcessor) {
+
+    }
 
     public void addServerCommand(AbstractCommand command) {
         this.SERVER_AVAILABLE_COMMAND.put(command.getCommandData().commandName(), command);

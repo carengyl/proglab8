@@ -8,16 +8,16 @@ import commonUtil.Validators;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
-import entities.CollectionOfHumanBeings;
+import entities.CollectionManager;
 
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
 public class FilterByCarCommand extends AbstractCommand implements Serializable {
-    private final CollectionOfHumanBeings collection;
+    private final CollectionManager collection;
 
-    public FilterByCarCommand(CollectionOfHumanBeings collection) {
+    public FilterByCarCommand(CollectionManager collection) {
         super("filter_by_car", "Show collection elements, which car equals @car", 1, "@car - \"true\" string equals true, others to false");
         this.collection = collection;
     }

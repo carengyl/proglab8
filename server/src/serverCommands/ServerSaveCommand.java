@@ -6,7 +6,7 @@ import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
-import entities.CollectionOfHumanBeings;
+import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
@@ -18,9 +18,9 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class ServerSaveCommand extends AbstractCommand {
-    private final CollectionOfHumanBeings collection;
+    private final CollectionManager collection;
 
-    public ServerSaveCommand(CollectionOfHumanBeings collection) {
+    public ServerSaveCommand(CollectionManager collection) {
         super("save", "Save collection to XML file");
         this.collection = collection;
     }

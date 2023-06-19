@@ -8,14 +8,14 @@ import commonUtil.Validators;
 import entities.Mood;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.ValidationException;
-import entities.CollectionOfHumanBeings;
+import entities.CollectionManager;
 
 import java.io.Serializable;
 import java.util.Optional;
 
 public class CountLessThanMinutesOfWaitingCommand extends AbstractCommand implements Serializable {
-    private final CollectionOfHumanBeings collection;
-    public CountLessThanMinutesOfWaitingCommand(CollectionOfHumanBeings collection) {
+    private final CollectionManager collection;
+    public CountLessThanMinutesOfWaitingCommand(CollectionManager collection) {
         super("count_less_than_minutes_of_waiting",
                 "Counts humanBeings, which minutes of waiting is less than @minutes_of_waiting",
                 1,

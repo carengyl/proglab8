@@ -2,10 +2,11 @@ package threads;
 
 import commonUtil.OutputUtil;
 import exceptions.NoUserInputException;
+import serverCommandLine.CommandManager;
 import serverCommandLine.ServerCommandReader;
 import serverUtil.ServerHandler;
 
-public class ConsoleThread extends Thread {
+public class ConsoleThread implements Runnable {
     private final ServerCommandReader serverCommandReader;
     public ConsoleThread(ServerCommandReader serverCommandReader) {
         this.serverCommandReader = serverCommandReader;
@@ -18,7 +19,7 @@ public class ConsoleThread extends Thread {
                 serverCommandReader.readCommandFromConsole();
             } catch (NoUserInputException e) {
                 OutputUtil.printErrorMessage(e.getMessage());
-                ServerHandler.toggleRunning();
+                ServerHandler.turnOff();
             }
         }
     }

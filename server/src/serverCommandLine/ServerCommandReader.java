@@ -8,10 +8,10 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class ServerCommandReader {
-    private final Invoker invoker;
+    private final CommandManager commandManager;
     private final Scanner scanner;
-    public ServerCommandReader(Invoker invoker, Scanner scanner) {
-        this.invoker = invoker;
+    public ServerCommandReader(CommandManager commandManager, Scanner scanner) {
+        this.commandManager = commandManager;
         this.scanner = scanner;
     }
 
@@ -20,6 +20,6 @@ public class ServerCommandReader {
         String[] splitString = scanner.nextLine().replaceAll("\s{2,}", " ").strip().split(" ");
         String commandName = splitString[0];
         CommandArgument argument = new CommandArgument(Arrays.copyOfRange(splitString, 1, splitString.length));
-        invoker.executeServerCommand(commandName, argument);
+        commandManager.executeServerCommand(commandName, argument);
     }
 }

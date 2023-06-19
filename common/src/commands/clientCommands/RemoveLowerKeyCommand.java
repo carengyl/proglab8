@@ -5,7 +5,7 @@ import commands.AbstractCommand;
 import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.Validators;
-import entities.CollectionOfHumanBeings;
+import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
@@ -14,10 +14,10 @@ import java.io.Serializable;
 import java.util.Optional;
 
 public class RemoveLowerKeyCommand extends AbstractCommand implements Serializable {
-    private final CollectionOfHumanBeings collection;
+    private final CollectionManager collection;
     //TO-DO record description, function validate
     //TO-DO execute_script, logic on server, read on client
-    public RemoveLowerKeyCommand(CollectionOfHumanBeings collection) {
+    public RemoveLowerKeyCommand(CollectionManager collection) {
         super("remove_lower_key", "Remove elements from collection, which key is lower than @key", 1, "@key - (long) unique key of element in collection");
         this.collection = collection;
     }

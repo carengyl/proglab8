@@ -3,9 +3,13 @@ package serverUtil;
 import commands.clientCommands.*;
 import commonUtil.OutputUtil;
 import commonUtil.Validators;
-import entities.CollectionOfHumanBeings;
+import dataBaseUtil.DBManager;
+import dataBaseUtil.DBSSHConnector;
+import dataBaseUtil.interfaces.DBConnectable;
+import entities.CollectionManager;
+import exceptions.DatabaseException;
 import exceptions.NoUserInputException;
-import serverCommandLine.Invoker;
+import serverCommandLine.CommandManager;
 import serverCommandLine.ServerCommandReader;
 import serverCommands.ServerExitCommand;
 import serverCommands.ServerHelpCommand;
@@ -18,67 +22,84 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ServerHandler {
-    private static boolean running = true;
     private final Scanner scanner = new Scanner(System.in);
     private final int MAX_PORT = 65535;
     private final int MIN_PORT = 1;
-    private ServerSocketHandler socketHandler;
+    private final DBConnectable dbConnector;
+    private final DBManager dbManager;
+    private final UsersManager usersManager;
+    private ServerSocketHandler serverSocketHandler;
+    private CommandProcessor commandProcessor;
     private final ServerCommandReader commandReader;
-    private final Invoker invoker;
-    private final CollectionOfHumanBeings collection;
+    private final serverCommandLine.CommandManager commandManager;
+    private final CollectionManager collectionManager;
+    private static boolean running = true;
 
-    public ServerHandler(CollectionOfHumanBeings collection) {
-        this.collection = collection;
+    {
+        dbConnector = new DBSSHConnector();
+        collectionManager = new CollectionManager();
+        dbManager = new DBManager(dbConnector);
+        usersManager = new UsersManager(dbManager);
+        commandProcessor = new CommandProcessor(dbManager, collectionManager);
+
+        commandManager = new CommandManager(commandProcessor);
+
+        this.commandReader = new ServerCommandReader(commandManager, scanner);
+
         try {
-            this.socketHandler = new ServerSocketHandler();
-        } catch (IOException e) {
+            collectionManager.setHumanBeings(dbManager.loadCollection());
+        } catch (DatabaseException e) {
             OutputUtil.printErrorMessage(e.getMessage());
+            System.exit(1);
         }
-        this.invoker = new Invoker();
-        initCommands();
-        this.commandReader = new ServerCommandReader(invoker, scanner);
-    }
-
-    private void initCommands() {
-        invoker.addClientCommand(new ClearCommand(collection));
-        invoker.addClientCommand(new CountGreaterThanMoodCommand(collection));
-        invoker.addClientCommand(new CountLessThanMinutesOfWaitingCommand(collection));
-        invoker.addClientCommand(new FilterByCarCommand(collection));
-
-        invoker.addClientCommand(new InfoCommand(collection));
-        invoker.addClientCommand(new InsertCommand(collection));
-        invoker.addClientCommand(new RemoveGreaterCommand(collection));
-        invoker.addClientCommand(new RemoveKeyCommand(collection));
-
-        invoker.addClientCommand(new RemoveLowerKeyCommand(collection));
-        invoker.addClientCommand(new ShowCommand(collection));
-        invoker.addClientCommand(new UpdateCommand(collection));
-        invoker.addClientCommand(new ExecuteScriptCommand());
-
-        invoker.addServerCommand(new ServerExitCommand());
-        invoker.addServerCommand(new ServerSaveCommand(collection));
-        invoker.addServerCommand(new ServerHelpCommand(invoker.getSERVER_AVAILABLE_COMMAND()));
     }
 
     public static boolean isRunning() {
         return running;
     }
 
-    public static void toggleRunning() {
-        running = !running;
+    public static void turnOff() {
+        ServerHandler.running = false;
+    }
+
+    private void initCommands() {
+        commandManager.addClientCommand(new ClearCommand(collectionManager));
+        commandManager.addClientCommand(new CountGreaterThanMoodCommand(collectionManager));
+        commandManager.addClientCommand(new CountLessThanMinutesOfWaitingCommand(collectionManager));
+        commandManager.addClientCommand(new FilterByCarCommand(collectionManager));
+
+        commandManager.addClientCommand(new InfoCommand(collectionManager));
+        commandManager.addClientCommand(new InsertCommand(collectionManager));
+        commandManager.addClientCommand(new RemoveGreaterCommand(collectionManager));
+        commandManager.addClientCommand(new RemoveKeyCommand(collectionManager));
+
+        commandManager.addClientCommand(new RemoveLowerKeyCommand(collectionManager));
+        commandManager.addClientCommand(new ShowCommand(collectionManager));
+        commandManager.addClientCommand(new UpdateCommand(collectionManager));
+        commandManager.addClientCommand(new ExecuteScriptCommand());
+
+        commandManager.addServerCommand(new ServerExitCommand());
+        commandManager.addServerCommand(new ServerSaveCommand(collectionManager));
+        commandManager.addServerCommand(new ServerHelpCommand(commandManager.getSERVER_AVAILABLE_COMMAND()));
     }
 
     public void startServerHandler() {
-        inputPort();
-        RequestThread requestThread = new RequestThread(invoker, socketHandler);
-        ConsoleThread consoleThread = new ConsoleThread(commandReader);
-        requestThread.start();
-        consoleThread.start();
+        try {
+            inputPort();
+            Thread requestThread = new Thread(new RequestThread(commandManager, serverSocketHandler, usersManager));
+            Thread consoleThread = new Thread(new ConsoleThread(commandReader));
+            requestThread.start();
+            consoleThread.start();
+        } catch (IOException e) {
+            OutputUtil.printErrorMessage(e.getMessage());
+            System.exit(1);
+        }
     }
 
-    private void inputPort() {
+    private void inputPort() throws IOException {
         try {
             boolean useDefaultPort = Validators.validateBooleanInput("Do you want to use a default server port", scanner);
+            serverSocketHandler = new ServerSocketHandler();
             if (!useDefaultPort) {
                 Integer port = Validators.validateInput(arg -> (((int) arg) <= MAX_PORT) && (((int) arg) >= MIN_PORT),
                         "Enter remote host port, it should be in [" + MIN_PORT + ";" + MAX_PORT + "]",
@@ -88,11 +109,11 @@ public class ServerHandler {
                         false,
                         scanner);
                 //noinspection ConstantConditions, NullPointer handled in Validators class
-                socketHandler.setSelfPort(port);
+                serverSocketHandler.setSelfPort(port);
             }
         } catch (NoUserInputException | NoSuchElementException e) {
             OutputUtil.printErrorMessage(e.getMessage());
-            System.exit(0);
+            System.exit(1);
         }
     }
 }

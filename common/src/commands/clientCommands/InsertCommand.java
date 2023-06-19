@@ -6,7 +6,7 @@ import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.HumanBeingFactory;
 import commonUtil.Validators;
-import entities.CollectionOfHumanBeings;
+import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
@@ -15,9 +15,9 @@ import java.io.Serializable;
 import java.util.Optional;
 
 public class InsertCommand extends AbstractCommand implements Serializable {
-    private final CollectionOfHumanBeings collection;
+    private final CollectionManager collection;
 
-    public InsertCommand(CollectionOfHumanBeings collection) {
+    public InsertCommand(CollectionManager collection) {
         super("insert", "Add element to collection by @key", 1, "@key - unique long of element");
         this.collection = collection;
     }

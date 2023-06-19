@@ -1,46 +1,71 @@
 package threads;
 
-import UDPutil.Request;
-import UDPutil.Response;
+import UDPutil.RequestType;
 import commonUtil.OutputUtil;
-import serverCommandLine.Invoker;
+import dataBaseUtil.DBSSHConnector;
+import serverCommandLine.CommandManager;
+import serverUtil.RequestWithAddress;
 import serverUtil.ServerHandler;
 import serverUtil.ServerSocketHandler;
+import serverUtil.UsersManager;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.*;
 
-public class RequestThread extends Thread {
-    private final Invoker invoker;
+public class RequestThread implements Runnable {
+    private final CommandManager commandManager;
+    private final UsersManager usersManager;
     private final ServerSocketHandler socketHandler;
+    private final ExecutorService fixedService = Executors.newFixedThreadPool(5);
+    private final ExecutorService cachedService = Executors.newCachedThreadPool();
+    private final ForkJoinPool forkJoinPool = new ForkJoinPool(4);
 
-    public RequestThread(Invoker invoker, ServerSocketHandler socketHandler) {
-        this.invoker = invoker;
+
+    public RequestThread(CommandManager commandManager, ServerSocketHandler socketHandler, UsersManager usersManager) {
+        this.commandManager = commandManager;
         this.socketHandler = socketHandler;
+        this.usersManager = usersManager;
     }
     @Override
     public void run() {
         while (ServerHandler.isRunning()) {
             try {
-                Optional<Request> acceptedRequest = socketHandler.getRequest();
-                if (acceptedRequest.isPresent()) {
-                    Request request = acceptedRequest.get();
-                    if (request.isRequestCommand()) {
-                        socketHandler.sendResponse(new Response(invoker.getClientSendingCommand()));
-                    } else {
-                        Response responseToSend = invoker.executeClientCommand(request);
-                        socketHandler.sendResponse(responseToSend);
-                    }
+                Future<Optional<RequestWithAddress>> listenFuture = fixedService.submit(socketHandler::getRequest);
+                Optional<RequestWithAddress> optionalRequestWithAddress = listenFuture.get();
+                if (optionalRequestWithAddress.isPresent()) {
+                    RequestWithAddress acceptedRequest = optionalRequestWithAddress.get();
+                    CompletableFuture.supplyAsync(acceptedRequest::request)
+                            .thenApplyAsync(request -> {
+                               if (request.getRequestType().equals(RequestType.COMMAND)) {
+                                   return commandManager.executeClientCommand(request);
+                               } else if (request.getRequestType().equals(RequestType.REGISTER)) {
+                                   return usersManager.registerNewUser(request);
+                               } else {
+                                   return usersManager.loginUser(request);
+                               }
+                            }, cachedService).
+                            thenAcceptAsync(response -> {
+                                try {
+                                    socketHandler.sendResponse(response, acceptedRequest.socketAddress());
+                                } catch (IOException e) {
+                                    OutputUtil.printErrorMessage(e.getMessage());
+                                }
+                            });
+
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                OutputUtil.printErrorMessage("An error occurred while deserializing the request, try again");
-            } catch (ClassNotFoundException e) {
+            } catch (ExecutionException e) {
                 OutputUtil.printErrorMessage(e.getMessage());
+            } catch (InterruptedException e) {
+                OutputUtil.printErrorMessage("An error occurred while deserializing the request, try again");
             }
         }
         try {
             socketHandler.stopServer();
+            DBSSHConnector.closeSSH();
+            fixedService.shutdown();
+            cachedService.shutdown();
+            forkJoinPool.shutdown();
         } catch (IOException e) {
             OutputUtil.printErrorMessage("An error occurred during stopping the server");
         }

@@ -6,15 +6,15 @@ import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.Validators;
 import exceptions.InvalidNumberOfArgsException;
-import entities.CollectionOfHumanBeings;
+import entities.CollectionManager;
 
 import java.io.Serializable;
 import java.util.Optional;
 
 public class ClearCommand extends AbstractCommand implements Serializable {
-    private final CollectionOfHumanBeings collection;
+    private final CollectionManager collection;
 
-    public ClearCommand(CollectionOfHumanBeings collection) {
+    public ClearCommand(CollectionManager collection) {
         super("clear", "Clear collection");
         this.collection = collection;
     }

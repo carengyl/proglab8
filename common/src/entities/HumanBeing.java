@@ -36,7 +36,7 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
      */
     @NotNull
     @Positive
-    private final Long id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
+    private Long id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     /**
      * Name field
      */
@@ -84,6 +84,11 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
             return true;
         }
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     /**
      * Minutes of waiting field
      */

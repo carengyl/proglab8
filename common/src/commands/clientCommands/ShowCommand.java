@@ -5,7 +5,7 @@ import commands.AbstractCommand;
 import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.Validators;
-import entities.CollectionOfHumanBeings;
+import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
@@ -14,8 +14,8 @@ import java.io.Serializable;
 import java.util.Optional;
 
 public class ShowCommand extends AbstractCommand implements Serializable {
-    private final CollectionOfHumanBeings collection;
-    public ShowCommand(CollectionOfHumanBeings collection) {
+    private final CollectionManager collection;
+    public ShowCommand(CollectionManager collection) {
         super("show", "Show data about collection and elements");
         this.collection = collection;
     }

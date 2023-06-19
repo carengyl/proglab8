@@ -5,7 +5,7 @@ import commands.AbstractCommand;
 import commands.CommandArgument;
 import commands.CommandData;
 import commonUtil.Validators;
-import entities.CollectionOfHumanBeings;
+import entities.CollectionManager;
 import exceptions.InvalidNumberOfArgsException;
 import exceptions.NoUserInputException;
 import exceptions.ValidationException;
@@ -15,9 +15,9 @@ import java.util.Optional;
 
 public class InfoCommand extends AbstractCommand implements Serializable {
 
-    private final CollectionOfHumanBeings collection;
+    private final CollectionManager collection;
 
-    public InfoCommand(CollectionOfHumanBeings collection) {
+    public InfoCommand(CollectionManager collection) {
         super("info", "Show info about collection");
         this.collection = collection;
     }

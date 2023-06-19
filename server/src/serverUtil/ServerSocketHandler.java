@@ -1,7 +1,6 @@
 package serverUtil;
 
 import UDPutil.Deserializer;
-import UDPutil.Request;
 import UDPutil.Response;
 import UDPutil.Serializer;
 
@@ -22,12 +21,7 @@ public class ServerSocketHandler {
     private final int SELECTOR_DELAY = 100;
     private Selector selector;
     private DatagramChannel datagramChannel;
-    private SocketAddress socketAddress;
     private int selfPort = DEFAULT_PORT;
-
-    public ServerSocketHandler(int port) throws IOException {
-        init(port);
-    }
 
     public ServerSocketHandler() throws IOException {
         init(DEFAULT_PORT);
@@ -46,7 +40,7 @@ public class ServerSocketHandler {
         datagramChannel.close();
     }
 
-    public Optional<Request> getRequest() throws IOException, ClassNotFoundException {
+    public Optional<RequestWithAddress> getRequest() throws IOException, ClassNotFoundException {
         if (selector.select(SELECTOR_DELAY) == 0) {
             return Optional.empty();
         }
@@ -58,19 +52,19 @@ public class ServerSocketHandler {
             if (key.isReadable()) {
                 int arraySize = datagramChannel.socket().getReceiveBufferSize();
                 ByteBuffer packet = ByteBuffer.allocate(arraySize);
-                socketAddress = datagramChannel.receive(packet);
+                SocketAddress address = datagramChannel.receive(packet);
                 ((Buffer) packet).flip();
                 byte[] bytes = new byte[packet.remaining()];
                 packet.get(bytes);
-                return Optional.of(Deserializer.deserializeRequest(bytes));
+                return Optional.of(new RequestWithAddress(Deserializer.deserializeRequest(bytes), address));
             }
         }
         return Optional.empty();
     }
 
-    public void sendResponse(Response response) throws IOException {
+    public void sendResponse(Response response, SocketAddress address) throws IOException {
         ByteBuffer byteBuffer = Serializer.serializeResponse(response);
-        datagramChannel.send(byteBuffer, socketAddress);
+        datagramChannel.send(byteBuffer, address);
     }
 
     public void setSelfPort(int selfPort) {

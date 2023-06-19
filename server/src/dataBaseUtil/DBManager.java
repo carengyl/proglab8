@@ -11,12 +11,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class DBManager {
-
     private final DBConnectable dbConnector;
-    private final ReentrantLock reentrantLock = new ReentrantLock();
 
     public DBManager(DBConnectable dbConnector) {
         this.dbConnector = dbConnector;

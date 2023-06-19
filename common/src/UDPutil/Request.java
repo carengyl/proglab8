@@ -64,4 +64,16 @@ public class Request implements Serializable {
     public UserData getUserData() {
         return userData;
     }
+
+    public RequestType getRequestType() {
+        return requestType;
+    }
+
+    public void setUserData(UserData userData) {
+        this.userData = userData;
+    }
+
+    public LocalTime getSendTime() {
+        return sendTime;
+    }
 }

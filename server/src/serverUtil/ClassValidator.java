@@ -2,7 +2,7 @@ package serverUtil;
 
 import commonUtil.OutputUtil;
 import entities.Car;
-import entities.CollectionOfHumanBeings;
+import entities.CollectionManager;
 import entities.Coordinates;
 import entities.HumanBeing;
 import jakarta.validation.ConstraintViolation;
@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 public class ClassValidator {
-    public static void validateClass(CollectionOfHumanBeings collection) {
+    public static void validateClass(CollectionManager collection) {
         java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         Validator validator = validatorFactory.getValidator();
