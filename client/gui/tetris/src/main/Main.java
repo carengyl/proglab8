@@ -1,13 +1,15 @@
 package main;
 
 import graphics.GraphicsModule;
+import graphics.lwjglmodule.LWJGLGraphicsModule;
 import keyboard.KeyboardHandleModule;
+import keyboard.lwjglmodule.LWJGLKeyboardHandleModule;
 
 public class Main {
     private static boolean endOfGame;
     private static MoveDirection moveDirection;
-    private static GraphicsModule graphicsModule;
-    private static KeyboardHandleModule keyboardHandleModule;
+    private static final GraphicsModule graphicsModule;
+    private static final KeyboardHandleModule keyboardHandleModule;
     private static final GameField gameField;
     private static boolean isRotateRequested;
     private static boolean isBoostRequested;
@@ -19,8 +21,8 @@ public class Main {
         moveDirection = MoveDirection.WAITING;
         isRotateRequested = false;
         isBoostRequested = false;
-
-
+        keyboardHandleModule = new LWJGLKeyboardHandleModule();
+        graphicsModule = new LWJGLGraphicsModule();
         gameField = new GameField();
     }
 
@@ -30,7 +32,7 @@ public class Main {
             input();
             applyLogic();
 
-            graphicsModule.draw();
+            graphicsModule.draw(gameField);
             graphicsModule.sync(Constants.FPS);
         }
 
@@ -60,7 +62,7 @@ public class Main {
             gameField.letFallDown();
         }
 
-        loopNumber = (loopNumber+1)%(Constants.FRAMES_PER_MOVE);
-        endOfGame = endOfGame || gameField.isOverfilled();
+        loopNumber = (loopNumber+1) % (Constants.FRAMES_PER_MOVE);
+        endOfGame = endOfGame || gameField.isOverfilled() || graphicsModule.isCloseRequested();
     }
 }

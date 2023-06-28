@@ -1,6 +1,6 @@
 package main;
 
-import graphics.ReadableColor;
+import graphics.MyReadableColor;
 
 public class Constants {
     public static final int CELL_SIZE = 24;
@@ -20,7 +20,7 @@ public class Constants {
     public static final int MOVE_DOWN_PER_SECOND = 3;
     public static final int FRAMES_PER_MOVE = FPS / MOVE_DOWN_PER_SECOND;
 
-    public static final ReadableColor EMPTINESS_COLOR = ReadableColor.BLACK;
+    public static final MyReadableColor EMPTINESS_COLOR = MyReadableColor.BLACK;
     public static final int BLOCKS_INITIAL_LEVEL = COUNT_CELLS_Y / 3;
     public static final int MISSING_BLOCKS_IN_INITIAL_LINE_MIN = COUNT_CELLS_X/3;
     public static final int MISSING_BLOCKS_IN_INITIAL_LINE_MAX = COUNT_CELLS_X/2;

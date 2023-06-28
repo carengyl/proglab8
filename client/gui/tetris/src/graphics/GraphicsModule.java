@@ -1,7 +1,9 @@
 package graphics;
 
+import main.GameField;
+
 public interface GraphicsModule {
-    void draw();
+    void draw(GameField field);
 
     boolean isCloseRequested();
 

@@ -1,6 +1,6 @@
 package main;
 
-import graphics.ReadableColor;
+import graphics.MyReadableColor;
 
 import java.util.Random;
 
@@ -8,15 +8,15 @@ import static main.Constants.*;
 
 public class GameField {
 
-    private ReadableColor[][] theField;
-    private int[] countFilledCellsInLine;
+    private final MyReadableColor[][] theField;
+    private final int[] countFilledCellsInLine;
 
     private Figure figure;
 
     public GameField() {
         spawnNewFigure();
 
-        theField = new ReadableColor[COUNT_CELLS_X][COUNT_CELLS_Y + OFFSET_TOP];
+        theField = new MyReadableColor[COUNT_CELLS_X][COUNT_CELLS_Y + OFFSET_TOP];
 
         countFilledCellsInLine = new int[COUNT_CELLS_Y + OFFSET_TOP];
 
@@ -37,11 +37,11 @@ public class GameField {
 
             int q = 0;
             for (int x = 0; x < COUNT_CELLS_X; x++) {
-                if ( (q < missingBlocksCount) && (missingBlocksXCoordinates[q]==x)) {
+                if ( (q < missingBlocksCount) && (missingBlocksXCoordinates[q] == x)) {
                     theField[x][y] = EMPTINESS_COLOR;
                     q++;
                 } else {
-                    theField[x][y] = ReadableColor.getRandomColor();
+                    theField[x][y] = MyReadableColor.getRandomColor();
                     countFilledCellsInLine[y]++;
                 }
             }
@@ -62,6 +62,10 @@ public class GameField {
 
     public boolean isEmpty(int x, int y) {
         return (theField[x][y].equals(EMPTINESS_COLOR));
+    }
+
+    public MyReadableColor getColor(int x, int y) {
+        return theField[x][y];
     }
 
     public Figure getFigure() {
@@ -171,7 +175,10 @@ public class GameField {
         boolean ret = false;
 
         for(int i = 0; i < OFFSET_TOP; i++){
-            if(countFilledCellsInLine[COUNT_CELLS_Y+i] != 0) ret = true;
+            if (countFilledCellsInLine[COUNT_CELLS_Y + i] != 0) {
+                ret = true;
+                break;
+            }
         }
 
         return ret;

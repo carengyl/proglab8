@@ -2,12 +2,12 @@ package graphics;
 
 import java.util.Random;
 
-public enum ReadableColor {
+public enum MyReadableColor {
     BLACK, RED, GREEN, BLUE, AQUA, YELLOW, ORANGE, PURPLE;
 
-    public static final ReadableColor[] colorByNumber = {BLACK, RED, GREEN, BLUE, AQUA, YELLOW, ORANGE, PURPLE};
+    public static final MyReadableColor[] colorByNumber = {BLACK, RED, GREEN, BLUE, AQUA, YELLOW, ORANGE, PURPLE, };
 
-    public static ReadableColor getRandomColor() {
+    public static MyReadableColor getRandomColor() {
         int colorNumber = new Random().nextInt(colorByNumber.length);
         return colorByNumber[colorNumber];
     }

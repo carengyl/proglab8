@@ -1,22 +1,22 @@
 package main;
 
-import graphics.ReadableColor;
+import graphics.MyReadableColor;
 
 import java.util.Random;
 
 public enum FigureForm {
-    I_FORM (CoordinatesMask.I_FORM, ReadableColor.BLUE),
-    J_FORM (CoordinatesMask.J_FORM, ReadableColor.ORANGE),
-    L_FORM (CoordinatesMask.L_FORM, ReadableColor.YELLOW),
-    O_FORM (CoordinatesMask.O_FORM, ReadableColor.RED),
-    S_FORM (CoordinatesMask.S_FORM, ReadableColor.AQUA),
-    Z_FORM (CoordinatesMask.Z_FORM, ReadableColor.PURPLE),
-    T_FORM (CoordinatesMask.T_FORM, ReadableColor.GREEN);
+    I_FORM (CoordinatesMask.I_FORM, MyReadableColor.BLUE),
+    J_FORM (CoordinatesMask.J_FORM, MyReadableColor.ORANGE),
+    L_FORM (CoordinatesMask.L_FORM, MyReadableColor.YELLOW),
+    O_FORM (CoordinatesMask.O_FORM, MyReadableColor.RED),
+    S_FORM (CoordinatesMask.S_FORM, MyReadableColor.AQUA),
+    Z_FORM (CoordinatesMask.Z_FORM, MyReadableColor.PURPLE),
+    T_FORM (CoordinatesMask.T_FORM, MyReadableColor.GREEN);
 
     private final CoordinatesMask mask;
-    private final ReadableColor color;
+    private final MyReadableColor color;
 
-    FigureForm(CoordinatesMask mask, ReadableColor color) {
+    FigureForm(CoordinatesMask mask, MyReadableColor color) {
         this.mask = mask;
         this.color = color;
     }
@@ -27,7 +27,7 @@ public enum FigureForm {
         return mask;
     }
 
-    public ReadableColor getColor() {
+    public MyReadableColor getColor() {
         return color;
     }
 

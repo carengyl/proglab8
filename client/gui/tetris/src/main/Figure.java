@@ -1,6 +1,6 @@
 package main;
 
-import graphics.ReadableColor;
+import graphics.MyReadableColor;
 
 public class Figure {
     private final Coordinates metaPointCoords;
@@ -59,7 +59,7 @@ public class Figure {
         metaPointCoords.y--;
     }
 
-    public ReadableColor getColor() {
+    public MyReadableColor getColor() {
         return form.getColor();
     }
 }
