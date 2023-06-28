@@ -13,6 +13,10 @@ public class Figure {
         this.form = form;
     }
 
+    public Figure(Coordinates metaPointCoords) {
+        this(metaPointCoords, RotationMode.NORMAL, FigureForm.getRandomForm());
+    }
+
     public Coordinates[] getCoordinates() {
         return form.getMask().generateFigure(metaPointCoords, currentRotation);
     }

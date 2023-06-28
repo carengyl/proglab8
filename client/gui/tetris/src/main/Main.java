@@ -8,17 +8,19 @@ public class Main {
     private static MoveDirection moveDirection;
     private static GraphicsModule graphicsModule;
     private static KeyboardHandleModule keyboardHandleModule;
-    private static GameField gameField;
+    private static final GameField gameField;
     private static boolean isRotateRequested;
     private static boolean isBoostRequested;
     private static int loopNumber;
 
-    {
+    static {
         loopNumber = 0;
         endOfGame = false;
         moveDirection = MoveDirection.WAITING;
         isRotateRequested = false;
         isBoostRequested = false;
+
+
         gameField = new GameField();
     }
 
@@ -45,20 +47,20 @@ public class Main {
 
     public static void applyLogic() {
         if (moveDirection != MoveDirection.WAITING) {
-            //gameField.tryMoveFigure;
+            gameField.tryMoveFigure(moveDirection);
             moveDirection = MoveDirection.WAITING;
         }
 
         if (isRotateRequested) {
-            //gameField.tryRotateFigure();
+            gameField.tryRotateFigure();
             isRotateRequested = false;
         }
 
         if ( (loopNumber% (Constants.FRAMES_PER_MOVE / (isBoostRequested ? Constants.BOOST_MULTIPLIER: 1)) ) == 0) {
-            //gameField.letFallDown();
+            gameField.letFallDown();
         }
 
         loopNumber = (loopNumber+1)%(Constants.FRAMES_PER_MOVE);
-        //endOfGame = endOfGame || gameField.isOverfilled();
+        endOfGame = endOfGame || gameField.isOverfilled();
     }
 }
