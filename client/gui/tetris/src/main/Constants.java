@@ -14,4 +14,7 @@ public class Constants {
 
     public static final int FPS = 60;
 
+    public static final int BOOST_MULTIPLIER = 5;
+    public static final int MOVE_DOWN_PER_SECOND = 3;
+    public static final int FRAMES_PER_MOVE = FPS / MOVE_DOWN_PER_SECOND;
 }

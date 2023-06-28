@@ -7,7 +7,7 @@ public interface KeyboardHandleModule {
 
     boolean wasEscPressed();
 
-    MoveDirection getShiftDirection();
+    MoveDirection getMoveDirection();
 
     boolean wasRotateRequested();
 
